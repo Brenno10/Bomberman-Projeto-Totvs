@@ -20,4 +20,4 @@ Participantes: Brenno e Weverton
  - Solo play
  - Ia dos inimigos
  - Multijogador
- - Modos de jogo (times, todos x todos)
+ - Modos de jogo (times x times, todos x todos, coop)
