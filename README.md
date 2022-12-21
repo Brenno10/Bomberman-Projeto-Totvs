@@ -18,6 +18,6 @@ Participantes: Brenno e Weverton
  - Sons
  - Escolha de personagem
  - Solo play
- - Ia dos inimigos
+ - I dos inimigos
  - Multijogador
  - Modos de jogo (times x times, todos x todos, coop)
