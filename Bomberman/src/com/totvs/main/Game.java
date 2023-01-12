@@ -20,7 +20,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private boolean isRunning = true;
     private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final int WIDTH = (int) screenSize.getWidth(), HEIGHT = (int) screenSize.getHeight();
-    private final int SCALE = 3;
+    private final int SCALE = 2;
 
     private final BufferedImage image;
 
@@ -29,25 +29,27 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     public World world;
 
-    private final Player player;
+    public static Player player;
 
     public Game() {
         addKeyListener(this);
-        this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+        this.setPreferredSize(new Dimension(WIDTH , HEIGHT));
         initFrame();
 
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         entities = new ArrayList<>();
+
+        // iniciando spritesheets
         tilesSpritesheet = new Spritesheet("/tiles_spritesheet.png");
         player1Spritesheet = new Spritesheet("/player1_spritesheet.png");
-        world = new World("/test_map.png");
 
-        // inicia as entidades
-        player = new Player((WIDTH / SCALE) / 2 , (HEIGHT / SCALE) / 2, 16, 26,
-                player1Spritesheet.getSprite(0, 69, 14, 25));
-
-        // adiciona as entidades na janela
+        // iniciando entidades
+        player = new Player(0 , 0, 14, 14,
+                player1Spritesheet.getSprite(0, 69, 14, 26));
         entities.add(player);
+
+        // iniciando o mapa
+        world = new World("/test_map.png");
     }
 
     // inicia a janela

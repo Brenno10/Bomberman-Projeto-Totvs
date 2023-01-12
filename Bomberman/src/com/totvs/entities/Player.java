@@ -1,6 +1,7 @@
 package com.totvs.entities;
 
 import com.totvs.main.Game;
+import com.totvs.world.World;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -46,21 +47,21 @@ public class Player extends Entity {
     @Override
     public void tick() {
         moved = false;
-        if (right) {
+        if (right && World.isFree()) {
             moved = true;
             dir = rightDir;
             x += speed;
-        } else if (left) {
+        } else if (left && World.isFree()) {
             moved = true;
             dir = leftDir;
             x -= speed - 0.7;
         }
 
-        if (up) {
+        if (up && World.isFree()) {
             moved = true;
             dir = upDir;
             y -= speed - 0.7;
-        } else if (down) {
+        } else if (down && World.isFree()) {
             moved = true;
             dir = downDir;
             y += speed;
