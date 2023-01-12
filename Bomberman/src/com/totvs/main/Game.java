@@ -25,7 +25,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private final BufferedImage image;
 
     public List<Entity> entities;
-    public static Spritesheet spritesheet;
+    public static Spritesheet player1Spritesheet, tilesSpritesheet;
 
     public World world;
 
@@ -36,14 +36,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
         this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
         initFrame();
 
-        world = new World("/tiles_spritesheet.png");
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         entities = new ArrayList<>();
-        spritesheet = new Spritesheet("/player1_spritesheet.png");
+        tilesSpritesheet = new Spritesheet("/tiles_spritesheet.png");
+        player1Spritesheet = new Spritesheet("/player1_spritesheet.png");
+        world = new World("/test_map.png");
 
         // inicia as entidades
-        player = new Player(0, 0, 32, 32,
-                spritesheet.getSprite(0, 69, 14, 25));
+        player = new Player((WIDTH / SCALE) / 2 , (HEIGHT / SCALE) / 2, 16, 26,
+                player1Spritesheet.getSprite(0, 69, 14, 25));
 
         // adiciona as entidades na janela
         entities.add(player);
@@ -95,8 +96,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
             return;
         }
         Graphics g = image.getGraphics();
-
-        g.setColor(new Color(0, 0, 0));
+        g.setColor(new Color(135, 206, 235));
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         world.render(g);

@@ -26,21 +26,21 @@ public class Player extends Entity {
         upPlayer = new BufferedImage[3];
         downPlayer = new BufferedImage[3];
 
-        rightPlayer[0] = Game.spritesheet.getSprite(0, 37, 15, 25);
-        rightPlayer[1] = Game.spritesheet.getSprite(16, 38, 15, 24);
-        rightPlayer[2] = Game.spritesheet.getSprite(33, 39, 15, 23);
+        rightPlayer[0] = Game.player1Spritesheet.getSprite(0, 37, 16, 25);
+        rightPlayer[1] = Game.player1Spritesheet.getSprite(16, 38, 16, 24);
+        rightPlayer[2] = Game.player1Spritesheet.getSprite(33, 39, 16, 23);
 
-        leftPlayer[0] = Game.spritesheet.getSprite(0, 101, 15, 25);
-        leftPlayer[1] = Game.spritesheet.getSprite(16, 103, 15, 23);
-        leftPlayer[2] = Game.spritesheet.getSprite(32, 102, 15, 24);
+        leftPlayer[0] = Game.player1Spritesheet.getSprite(0, 101, 16, 25);
+        leftPlayer[1] = Game.player1Spritesheet.getSprite(16, 103, 16, 23);
+        leftPlayer[2] = Game.player1Spritesheet.getSprite(32, 102, 16, 24);
 
-        upPlayer[0] = Game.spritesheet.getSprite(0, 7, 14, 26);
-        upPlayer[1] = Game.spritesheet.getSprite(16, 7, 14, 26);
-        upPlayer[2] = Game.spritesheet.getSprite(32, 7, 14, 26);
+        upPlayer[0] = Game.player1Spritesheet.getSprite(0, 7, 16, 26);
+        upPlayer[1] = Game.player1Spritesheet.getSprite(16, 7, 16, 26);
+        upPlayer[2] = Game.player1Spritesheet.getSprite(32, 7, 16, 26);
 
-        downPlayer[0] = Game.spritesheet.getSprite(0, 69, 15, 25);
-        downPlayer[1] = Game.spritesheet.getSprite(16, 69, 14, 25);
-        downPlayer[2] = Game.spritesheet.getSprite(32, 69, 14, 26);
+        downPlayer[0] = Game.player1Spritesheet.getSprite(0, 69, 16, 25);
+        downPlayer[1] = Game.player1Spritesheet.getSprite(16, 69, 16, 25);
+        downPlayer[2] = Game.player1Spritesheet.getSprite(32, 69, 16, 26);
     }
 
     @Override
