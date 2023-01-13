@@ -44,8 +44,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
         player1Spritesheet = new Spritesheet("/player1_spritesheet.png");
 
         // iniciando entidades
-        player = new Player(0 , 0, 14, 14,
-                player1Spritesheet.getSprite(0, 69, 14, 26));
+        player = new Player(0 , 0, 8, 8,
+                player1Spritesheet.getSprite(0, 69, 16, 26));
         entities.add(player);
 
         // iniciando o mapa
@@ -156,15 +156,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
     // Botão apertado
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_D) {
             player.right = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+        } else if (e.getKeyCode() == KeyEvent.VK_A) {
             player.left = true;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) {
+        if (e.getKeyCode() == KeyEvent.VK_W) {
             player.up = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
             player.down = true;
         }
     }
@@ -172,15 +172,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
     // Botão solto
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_D) {
             player.right = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+        } else if (e.getKeyCode() == KeyEvent.VK_A) {
             player.left = false;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) {
+        if (e.getKeyCode() == KeyEvent.VK_W) {
             player.up = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
             player.down = false;
         }
     }
