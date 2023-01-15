@@ -1,7 +1,12 @@
 package com.totvs.entities;
 
+import com.totvs.main.Game;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Entity {
 
@@ -50,6 +55,10 @@ public class Entity {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public void destroy(Entity entity) {
+        Game.entities.remove(entity);
     }
 
     public void tick() {

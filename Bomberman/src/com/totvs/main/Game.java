@@ -1,5 +1,6 @@
 package com.totvs.main;
 
+import com.totvs.entities.Bomb;
 import com.totvs.entities.Entity;
 import com.totvs.entities.Player;
 import com.totvs.graphics.Spritesheet;
@@ -24,12 +25,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     private final BufferedImage image;
 
-    public List<Entity> entities;
-    public static Spritesheet player1Spritesheet, tilesSpritesheet;
+    public static List<Entity> entities;
+    public static Spritesheet player1Spritesheet, tilesSpritesheet, bombSprite;
 
     public World world;
 
-    public static Player player;
+    public static Player player1;
+    public static Player player2;
 
     public Game() {
         addKeyListener(this);
@@ -42,11 +44,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
         // iniciando spritesheets
         tilesSpritesheet = new Spritesheet("/tiles_spritesheet.png");
         player1Spritesheet = new Spritesheet("/player1_spritesheet.png");
+        bombSprite = new Spritesheet("/bombs_spritesheet.png");
 
         // iniciando entidades
-        player = new Player(0 , 0, 8, 8,
+        player1 = new Player(0 , 0, 8, 8,
                 player1Spritesheet.getSprite(0, 69, 16, 26));
-        entities.add(player);
+        entities.add(player1);
+
+        player2 = new Player(0 , 0, 8, 8,
+                player1Spritesheet.getSprite(0, 69, 16, 26));
+        entities.add(player2);
 
         // iniciando o mapa
         world = new World("/test_map.png");
@@ -57,9 +64,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
         frame = new JFrame("Bomberman");
         frame.add(this);
         frame.setResizable(false);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
-        frame.pack();
+        frame.setSize(800, 800);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
@@ -85,8 +91,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     // Roda a cada frame
     public void tick() {
-        for (Entity e : entities) {
-            e.tick();
+        for (int i = 0; i < entities.size(); i++) {
+            entities.get(i).tick();
         }
     }
 
@@ -156,32 +162,65 @@ public class Game extends Canvas implements Runnable, KeyListener {
     // Botão apertado
     @Override
     public void keyPressed(KeyEvent e) {
+        // jogador 1
         if (e.getKeyCode() == KeyEvent.VK_D) {
-            player.right = true;
+            player1.right = true;
         } else if (e.getKeyCode() == KeyEvent.VK_A) {
-            player.left = true;
+            player1.left = true;
         }
 
         if (e.getKeyCode() == KeyEvent.VK_W) {
-            player.up = true;
+            player1.up = true;
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            player.down = true;
+            player1.down = true;
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_E && player1.hasBombs()) {
+            Bomb.placeBomb(player1.getX(), player1.getY(), Game.bombSprite, player1);
+            player1.placedBombs++;
+        }
+
+        // jogador 2
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            player2.right = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            player2.left = true;
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            player2.up = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            player2.down = true;
         }
     }
 
     // Botão solto
     @Override
     public void keyReleased(KeyEvent e) {
+        // jogador 1
         if (e.getKeyCode() == KeyEvent.VK_D) {
-            player.right = false;
+            player1.right = false;
         } else if (e.getKeyCode() == KeyEvent.VK_A) {
-            player.left = false;
+            player1.left = false;
         }
 
         if (e.getKeyCode() == KeyEvent.VK_W) {
-            player.up = false;
+            player1.up = false;
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            player.down = false;
+            player1.down = false;
+        }
+
+        // jogador 2
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            player2.right = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            player2.left = false;
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            player2.up = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            player2.down = false;
         }
     }
 }

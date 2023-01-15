@@ -20,7 +20,8 @@ public class World {
     public World(String path) {
         try {
             BufferedImage map = ImageIO.read(getClass().getResource(path));
-            players.add(Game.player);
+            players.add(Game.player1);
+            players.add(Game.player2);
 
             int[] pixels = new int[map.getWidth() * map.getHeight()];
             tiles = new Tile[map.getWidth() * map.getHeight()];
