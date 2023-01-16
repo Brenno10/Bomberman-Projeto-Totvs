@@ -12,7 +12,7 @@ public class Player extends Entity {
     public final int downDir = 0, leftDir = 1, upDir = 2, rightDir = 3;
     public int dir = 0;
     public double speed = 2;
-    public static int maxBombsAmount = 1;
+    public static int maxBombsAmount = 3;
     public int placedBombs = 0;
 
     private int frames = 0, maxFrames = 6, index, maxIndex = 2;

@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game extends Canvas implements Runnable, KeyListener {
-    public static JFrame frame;
+    private static JFrame frame;
     private Thread thread;
     private boolean isRunning = true;
     private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final int WIDTH = (int) screenSize.getWidth(), HEIGHT = (int) screenSize.getHeight();
-    private final int SCALE = 2;
+    public static final int SCALE = 2;
 
     private final BufferedImage image;
 
