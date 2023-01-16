@@ -8,20 +8,78 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Bomb extends Entity {
-    private int frames = 0, maxFrames = 24, index, maxIndex = 3, timer = 0;
-    public BufferedImage[] bombFrames;
-    public Player whoPlaced;
+    private int frames = 0, index, timer = 0;
+    private final int  maxFrames = 24, maxIndex = 3, maxTimer = 160, maxExFrames = 3;
+    private Player whoPlaced;
     public boolean exploded = false;
+
+    private BufferedImage currentFrame;
+    private final BufferedImage[] bombFrames;
+    private final BufferedImage[] explosionFrames;
+
+    private final BufferedImage[] horizontalFlameTrail;
+    private final BufferedImage[] leftFlameTrailTip;
+    private final BufferedImage[] rightFlameTrailTip;
+
+    private final BufferedImage[] verticalFlameTrail;
+    private final BufferedImage[] upFlameTrailTip;
+    private final BufferedImage[] downFlameTrailTip;
+
+    private BufferedImage[] flameTrail;
 
     public Bomb(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
 
-        bombFrames = new BufferedImage[5];
+        bombFrames = new BufferedImage[4];
+        explosionFrames = new BufferedImage[12];
 
+        horizontalFlameTrail = new BufferedImage[5];
+        leftFlameTrailTip = new BufferedImage[5];
+        rightFlameTrailTip = new BufferedImage[5];
+
+        verticalFlameTrail = new BufferedImage[5];
+        upFlameTrailTip = new BufferedImage[5];
+        downFlameTrailTip = new BufferedImage[5];
+
+        // frames da bomba
         for (int i = 0; i < bombFrames.length; i++) {
             bombFrames[i] = Game.bombSprite.getSprite(i * 16, 0, 16, 16);
         }
-        bombFrames[4] = Game.bombSprite.getSprite(96, 16, 16, 16);
+
+        // frames da explosão
+        for (int i = 0; i < explosionFrames.length - 7; i++) {
+            explosionFrames[i] = Game.bombSprite.getSprite(96, (i * 16) + 16, 16, 16);
+        }
+        for (int i = 0; i < explosionFrames.length - 5; i++) {
+            explosionFrames[i + 5] = Game.bombSprite.getSprite(112, (i * 16) + 16, 16, 16);
+        }
+        explosionFrames[10] = Game.bombSprite.getSprite(64, 112, 16, 16);
+        explosionFrames[11] = Game.bombSprite.getSprite(80, 112, 16, 16);
+
+        // sprites da trilha de fogo horizontal
+        for (int i = 0; i < horizontalFlameTrail.length; i++) {
+            horizontalFlameTrail[i] = Game.bombSprite.getSprite(64, (i * 16) + 16, 16, 16);
+        }
+        for (int i = 0; i < leftFlameTrailTip.length; i++) {
+            leftFlameTrailTip[i] = Game.bombSprite.getSprite(32, (i * 16) + 16, 16, 16);
+        }
+        for (int i = 0; i < rightFlameTrailTip.length; i++) {
+            rightFlameTrailTip[i] = Game.bombSprite.getSprite(48, (i * 16) + 16, 16, 16);
+        }
+
+        // sprites da trilha de fogo vertical
+        for (int i = 0; i < verticalFlameTrail.length; i++) {
+            verticalFlameTrail[i] = Game.bombSprite.getSprite(64, (i * 16) + 16, 16, 16);
+        }
+        for (int i = 0; i < upFlameTrailTip.length; i++) {
+            upFlameTrailTip[i] = Game.bombSprite.getSprite(32, (i * 16) + 16, 16, 16);
+        }
+        for (int i = 0; i < downFlameTrailTip.length; i++) {
+            downFlameTrailTip[i] = Game.bombSprite.getSprite(48, (i * 16) + 16, 16, 16);
+        }
+
+        // frame atual da animação
+        currentFrame = bombFrames[0];
     }
 
     public static void placeBomb(int posx, int posy, Spritesheet bombSprite, Player player) {
@@ -49,37 +107,36 @@ public class Bomb extends Entity {
     }
 
     public void explode() {
-//        for (int x = 1; x < whoPlaced.bombPower + 1; x++) {
-//            for (int y = 1; y < whoPlaced.bombPower + 1; y++) {
-//                if (whoPlaced.bombPower == x) {
-//                    leftExplosionIndex = 0;
-//                    rightExplosionIndex = 2;
-//                }
-//                else {
-//                    leftExplosionIndex = 1;
-//                    rightExplosionIndex = 1;
-//                }
-//                leftExplosionPosition = -(x * 16);
-//                rightExplosionPosition = (x * 16);
-//            }
-//        }
-//
-//        for (int x = 1; x < whoPlaced.bombPower + 1; x++) {
-//            for (int y = 1; y < whoPlaced.bombPower + 1; y++) {
-//                if (whoPlaced.bombPower == y) {
-//                    upExplosionIndex = 0;
-//                    downExplosionIndex = 2;
-//                }
-//                else {
-//                    upExplosionIndex = 1;
-//                    downExplosionIndex = 1;
-//                }
-//                upExplosionPosition = -(x * 16);
-//                downExplosionPosition = (x * 16);
-//            }
-//        }
+        int power = whoPlaced.bombPower;
+        if (power >= 4)
+            power = 4;
 
-        index = 4;
+        for (int xx = 0; xx < power + 1; xx++) {
+            if (World.isFree(this.getX() + xx * 16, this.getY()) ||
+                    World.isFree(this.getX() - xx * 16, this.getY())) {
+                if (xx != power) {
+                    FlameTrail trail = new FlameTrail(this.getX() + xx * 16, this.getY(),
+                            16, 16, horizontalFlameTrail[power]);
+                }
+                else {
+
+                }
+            }
+        }
+        for (int yy = 0; yy < power + 1; yy++) {
+            if (World.isFree(this.getX(), this.getY() + yy * 16) ||
+                    World.isFree(this.getX(), this.getY() - yy * 16)) {
+                if (yy == power) {
+                    FlameTrail trail = new FlameTrail(this.getX(), this.getY() + yy * 16,
+                            16, 16, horizontalFlameTrail[power]);
+                }
+                else {
+
+                }
+            }
+        }
+
+        index = power;
     }
 
     public void tick() {
@@ -88,34 +145,47 @@ public class Bomb extends Entity {
             timer++;
 
             // animação
-            if (frames == maxFrames && timer < 180) {
+            if (frames == maxFrames && timer < maxTimer) {
+                currentFrame = bombFrames[index];
                 frames = 0;
                 index++;
+
                 if (index > maxIndex) {
                     index = 0;
                 }
             }
 
             // timer da bomba
-            if (timer >= 180) {
+            if (timer >= maxTimer && timer < maxTimer + maxExFrames + 8) {
                 explode();
+                currentFrame = explosionFrames[index];
+                frames = 0;
+            }
 
-                if (timer >= 204) {
+            if (timer == maxTimer + maxExFrames + 8) {
+                index = 5;
+                frames = 0;
+            }
 
+            if (timer >= maxTimer + maxExFrames) {
+                currentFrame = explosionFrames[index];
+                if (frames == maxExFrames) {
+                    index++;
+                    frames = 0;
+                }
 
-                    if (index == this.bombFrames.length - 1) {
-                        destroy(this);
-                        whoPlaced.placedBombs--;
-                        exploded = true;
-                        timer = 0;
-                        index = 0;
-                    }
+                if (index == this.explosionFrames.length - 1) {
+                    this.destroy();
+                    whoPlaced.placedBombs--;
+                    exploded = true;
+                    timer = 0;
+                    index = 0;
                 }
             }
         }
     }
 
     public void render(Graphics g) {
-        g.drawImage(bombFrames[index], this.getX(), this.getY(), null);
+        g.drawImage(currentFrame, this.getX(), this.getY(), null);
     }
 }
