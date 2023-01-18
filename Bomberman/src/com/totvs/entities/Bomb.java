@@ -77,10 +77,10 @@ public class Bomb extends Entity {
             verticalFlameTrail[i] = Game.bombSprite.getSprite(64, (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < upFlameTrailTip.length; i++) {
-            upFlameTrailTip[i] = Game.bombSprite.getSprite(32, (i * 16) + 16, 16, 16);
+            upFlameTrailTip[i] = Game.bombSprite.getSprite(0, (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < downFlameTrailTip.length; i++) {
-            downFlameTrailTip[i] = Game.bombSprite.getSprite(48, (i * 16) + 16, 16, 16);
+            downFlameTrailTip[i] = Game.bombSprite.getSprite(16, (i * 16) + 16, 16, 16);
         }
 
         // frame atual da animação
@@ -116,7 +116,7 @@ public class Bomb extends Entity {
         if (power >= 4)
             power = 4;
 
-        for (int xx = 1; xx < power + 1; xx++) {
+        for (int xx = 1; xx <= power + 1; xx++) {
             if (xx <= power) {
                 if (World.isFree(this.getX() + xx * 16, this.getY()))
                     flameTrail.add(new FlameTrail(this.getX() + xx * 16, this.getY(),
@@ -134,7 +134,7 @@ public class Bomb extends Entity {
             }
         }
 
-        for (int yy = 1; yy < power + 1; yy++) {
+        for (int yy = 1; yy <= power + 1; yy++) {
             if (yy <= power) {
                 if (World.isFree(this.getX(), this.getY() + yy * 16))
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() + yy * 16,
