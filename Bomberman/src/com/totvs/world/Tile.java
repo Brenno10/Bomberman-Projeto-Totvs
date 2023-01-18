@@ -10,13 +10,29 @@ public class Tile {
     public static BufferedImage TILE_WALL = Game.tilesSpritesheet.getSprite(17, 14, 16, 16);
     public static BufferedImage TILE_FLOOR = Game.tilesSpritesheet.getSprite(51, 14, 16, 16);
 
-    private BufferedImage sprite;
-    private int x,y;
+    protected BufferedImage sprite;
+    protected int x,y;
 
     public Tile(int x, int y, BufferedImage sprite) {
         this.x = x;
         this.y = y;
         this.sprite = sprite;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public BufferedImage getSprite() {
+        return sprite;
+    }
+
+    public void tick() {
+
     }
 
     public void render(Graphics g) {

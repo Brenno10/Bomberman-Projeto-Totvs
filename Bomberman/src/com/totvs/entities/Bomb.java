@@ -13,8 +13,13 @@ public class Bomb extends Entity {
     private int frames = 0, index, timer = 0;
     private final int  maxFrames = 24, maxIndex = 3, maxTimer = 160, maxExFrames = 3;
     private Player whoPlaced;
-    public boolean exploded = false;
-    public boolean iExploded = false;
+    private boolean exploded = false;
+    private boolean iExploded = false;
+    private boolean upFree = true;
+    private boolean downFree = true;
+    private boolean leftFree = true;
+    private boolean rightFree = true;
+    protected boolean canBePlaced = true;
 
     private BufferedImage currentFrame;
     private final BufferedImage[] bombFrames;
@@ -28,7 +33,7 @@ public class Bomb extends Entity {
     private final BufferedImage[] upFlameTrailTip;
     private final BufferedImage[] downFlameTrailTip;
 
-    private List<FlameTrail> flameTrail;
+    private final List<FlameTrail> flameTrail;
 
     public Bomb(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
@@ -106,9 +111,15 @@ public class Bomb extends Entity {
 
         Bomb bomb = new Bomb(x, y, 16, 16,
                 bombSprite.getSprite(0, 0, 16, 16));
-        Game.entities.add(bomb);
-        bomb.exploded = false;
-        bomb.whoPlaced = player;
+
+        bomb.checkCollision();
+
+        if (bomb.canBePlaced) {
+            Game.entities.add(bomb);
+            bomb.whoPlaced = player;
+            bomb.whoPlaced.placedBombs++;
+        } else
+            bomb.destroy();
     }
 
     public void explode() {
@@ -116,39 +127,62 @@ public class Bomb extends Entity {
         if (power >= 4)
             power = 4;
 
-        for (int xx = 1; xx <= power + 1; xx++) {
-            if (xx <= power) {
-                if (World.isFree(this.getX() + xx * 16, this.getY()))
+        for (int xx = 1; xx <= whoPlaced.bombPower + 1; xx++) {
+            if (xx <= whoPlaced.bombPower) {
+                if (World.isFree(this.getX() + xx * 16, this.getY()) && rightFree) {
                     flameTrail.add(new FlameTrail(this.getX() + xx * 16, this.getY(),
                             16, 16, horizontalFlameTrail[power]));
-                if (World.isFree(this.getX() - xx * 16, this.getY()))
+                } else {
+                    rightFree = false;
+                }
+                if (World.isFree(this.getX() - xx * 16, this.getY()) && leftFree) {
                     flameTrail.add(new FlameTrail(this.getX() - xx * 16, this.getY(),
                             16, 16, horizontalFlameTrail[power]));
+                } else {
+                    leftFree = false;
+                }
             } else {
-                if (World.isFree(this.getX() + xx * 16, this.getY()))
+                if (World.isFree(this.getX() + xx * 16, this.getY()) && rightFree) {
                     flameTrail.add(new FlameTrail(this.getX() + xx * 16, this.getY(),
                             16, 16, rightFlameTrailTip[power]));
-                if (World.isFree(this.getX() - xx * 16, this.getY()))
+                } else {
+                    rightFree = false;
+                }
+                if (World.isFree(this.getX() - xx * 16, this.getY()) && leftFree) {
                     flameTrail.add(new FlameTrail(this.getX() - xx * 16, this.getY(),
                             16, 16, leftFlameTrailTip[power]));
+                } else
+                    leftFree = false;
             }
         }
 
-        for (int yy = 1; yy <= power + 1; yy++) {
-            if (yy <= power) {
-                if (World.isFree(this.getX(), this.getY() + yy * 16))
+        for (int yy = 1; yy <= whoPlaced.bombPower + 1; yy++) {
+            if (yy <= whoPlaced.bombPower) {
+                if (World.isFree(this.getX(), this.getY() + yy * 16) && downFree) {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() + yy * 16,
                             16, 16, verticalFlameTrail[power]));
-                if (World.isFree(this.getX(), this.getY() - yy * 16))
+                } else {
+                    downFree = false;
+                }
+                if (World.isFree(this.getX(), this.getY() - yy * 16) && upFree) {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() - yy * 16,
                             16, 16, verticalFlameTrail[power]));
+                } else {
+                    upFree = false;
+                }
             } else {
-                if (World.isFree(this.getX(), this.getY() + yy * 16))
+                if (World.isFree(this.getX(), this.getY() + yy * 16) && downFree) {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() + yy * 16,
-                        16, 16, downFlameTrailTip[power]));
-                if (World.isFree(this.getX(), this.getY() - yy * 16))
+                            16, 16, downFlameTrailTip[power]));
+                } else {
+                    downFree = false;
+                }
+                if (World.isFree(this.getX(), this.getY() - yy * 16) && upFree) {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() - yy * 16,
-                        16, 16, upFlameTrailTip[power]));
+                            16, 16, upFlameTrailTip[power]));
+                } else {
+                    upFree = false;
+                }
             }
         }
 
@@ -156,8 +190,24 @@ public class Bomb extends Entity {
         index = power;
     }
 
+    @Override
+    public void checkCollision() {
+        canBePlaced = true;
+        for (Entity e : Game.entities) {
+            if (this.getHitBox().x == e.getHitBox().x && this.getHitBox().y == e.getHitBox().y) {
+                canBePlaced = false;
+                return;
+            }
+        }
+    }
+
+    @Override
     public void tick() {
         if (!exploded) {
+            this.updateHitbox(0, 0);
+            for (int i = 0; i < flameTrail.size(); i++) {
+                flameTrail.get(i).checkCollision();
+            }
             frames++;
             timer++;
 
@@ -203,12 +253,17 @@ public class Bomb extends Entity {
         }
     }
 
+    @Override
     public void render(Graphics g) {
         g.drawImage(currentFrame, this.getX(), this.getY(), null);
         if (this.iExploded) {
-            for (int i = 0; i < flameTrail.size(); i++) {
-                g.drawImage(flameTrail.get(i).getSprite(), flameTrail.get(i).getX(), flameTrail.get(i).getY(), null);
+            for (FlameTrail trail : flameTrail) {
+                g.drawImage(trail.getSprite(), trail.getX(), trail.getY(), null);
             }
+        }
+        this.drawHitbox(g);
+        for (int i = 0; i < flameTrail.size(); i++) {
+            flameTrail.get(i).drawHitbox(g);
         }
     }
 }

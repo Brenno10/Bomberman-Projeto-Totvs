@@ -47,11 +47,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
         bombSprite = new Spritesheet("/bombs_spritesheet.png");
 
         // iniciando entidades
-        player1 = new Player(0 , 0, 8, 8,
+        player1 = new Player(0 , 0, 8, 10,
                 player1Spritesheet.getSprite(0, 69, 16, 26));
         entities.add(player1);
 
-        player2 = new Player(0 , 0, 8, 8,
+        player2 = new Player(0 , 0, 8, 10,
                 player1Spritesheet.getSprite(0, 69, 16, 26));
         entities.add(player2);
 
@@ -177,7 +177,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         if (e.getKeyCode() == KeyEvent.VK_E && player1.hasBombs()) {
             Bomb.placeBomb(player1.getX(), player1.getY(), Game.bombSprite, player1);
-            player1.placedBombs++;
         }
 
         // jogador 2
