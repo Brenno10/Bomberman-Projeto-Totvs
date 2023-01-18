@@ -1,6 +1,6 @@
 # Jogo Bomberman em Java
 
-Participantes: Brenno e Weverton
+Participantes: Brenno
 
 ## Features
  - Pintura do frame usando fps
