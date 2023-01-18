@@ -6,12 +6,15 @@ import com.totvs.world.World;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bomb extends Entity {
     private int frames = 0, index, timer = 0;
     private final int  maxFrames = 24, maxIndex = 3, maxTimer = 160, maxExFrames = 3;
     private Player whoPlaced;
     public boolean exploded = false;
+    public boolean iExploded = false;
 
     private BufferedImage currentFrame;
     private final BufferedImage[] bombFrames;
@@ -25,7 +28,7 @@ public class Bomb extends Entity {
     private final BufferedImage[] upFlameTrailTip;
     private final BufferedImage[] downFlameTrailTip;
 
-    private BufferedImage[] flameTrail;
+    private List<FlameTrail> flameTrail;
 
     public Bomb(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
@@ -40,6 +43,8 @@ public class Bomb extends Entity {
         verticalFlameTrail = new BufferedImage[5];
         upFlameTrailTip = new BufferedImage[5];
         downFlameTrailTip = new BufferedImage[5];
+
+        flameTrail = new ArrayList<>();
 
         // frames da bomba
         for (int i = 0; i < bombFrames.length; i++) {
@@ -58,7 +63,7 @@ public class Bomb extends Entity {
 
         // sprites da trilha de fogo horizontal
         for (int i = 0; i < horizontalFlameTrail.length; i++) {
-            horizontalFlameTrail[i] = Game.bombSprite.getSprite(64, (i * 16) + 16, 16, 16);
+            horizontalFlameTrail[i] = Game.bombSprite.getSprite(80, (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < leftFlameTrailTip.length; i++) {
             leftFlameTrailTip[i] = Game.bombSprite.getSprite(32, (i * 16) + 16, 16, 16);
@@ -111,31 +116,43 @@ public class Bomb extends Entity {
         if (power >= 4)
             power = 4;
 
-        for (int xx = 0; xx < power + 1; xx++) {
-            if (World.isFree(this.getX() + xx * 16, this.getY()) ||
-                    World.isFree(this.getX() - xx * 16, this.getY())) {
-                if (xx != power) {
-                    FlameTrail trail = new FlameTrail(this.getX() + xx * 16, this.getY(),
-                            16, 16, horizontalFlameTrail[power]);
-                }
-                else {
-
-                }
-            }
-        }
-        for (int yy = 0; yy < power + 1; yy++) {
-            if (World.isFree(this.getX(), this.getY() + yy * 16) ||
-                    World.isFree(this.getX(), this.getY() - yy * 16)) {
-                if (yy == power) {
-                    FlameTrail trail = new FlameTrail(this.getX(), this.getY() + yy * 16,
-                            16, 16, horizontalFlameTrail[power]);
-                }
-                else {
-
-                }
+        for (int xx = 1; xx < power + 1; xx++) {
+            if (xx <= power) {
+                if (World.isFree(this.getX() + xx * 16, this.getY()))
+                    flameTrail.add(new FlameTrail(this.getX() + xx * 16, this.getY(),
+                            16, 16, horizontalFlameTrail[power]));
+                if (World.isFree(this.getX() - xx * 16, this.getY()))
+                    flameTrail.add(new FlameTrail(this.getX() - xx * 16, this.getY(),
+                            16, 16, horizontalFlameTrail[power]));
+            } else {
+                if (World.isFree(this.getX() + xx * 16, this.getY()))
+                    flameTrail.add(new FlameTrail(this.getX() + xx * 16, this.getY(),
+                            16, 16, rightFlameTrailTip[power]));
+                if (World.isFree(this.getX() - xx * 16, this.getY()))
+                    flameTrail.add(new FlameTrail(this.getX() - xx * 16, this.getY(),
+                            16, 16, leftFlameTrailTip[power]));
             }
         }
 
+        for (int yy = 1; yy < power + 1; yy++) {
+            if (yy <= power) {
+                if (World.isFree(this.getX(), this.getY() + yy * 16))
+                    flameTrail.add(new FlameTrail(this.getX(), this.getY() + yy * 16,
+                            16, 16, verticalFlameTrail[power]));
+                if (World.isFree(this.getX(), this.getY() - yy * 16))
+                    flameTrail.add(new FlameTrail(this.getX(), this.getY() - yy * 16,
+                            16, 16, verticalFlameTrail[power]));
+            } else {
+                if (World.isFree(this.getX(), this.getY() + yy * 16))
+                    flameTrail.add(new FlameTrail(this.getX(), this.getY() + yy * 16,
+                        16, 16, downFlameTrailTip[power]));
+                if (World.isFree(this.getX(), this.getY() - yy * 16))
+                    flameTrail.add(new FlameTrail(this.getX(), this.getY() - yy * 16,
+                        16, 16, upFlameTrailTip[power]));
+            }
+        }
+
+        iExploded = true;
         index = power;
     }
 
@@ -163,6 +180,7 @@ public class Bomb extends Entity {
             }
 
             if (timer == maxTimer + maxExFrames + 8) {
+                this.flameTrail.clear();
                 index = 5;
                 frames = 0;
             }
@@ -187,5 +205,10 @@ public class Bomb extends Entity {
 
     public void render(Graphics g) {
         g.drawImage(currentFrame, this.getX(), this.getY(), null);
+        if (this.iExploded) {
+            for (int i = 0; i < flameTrail.size(); i++) {
+                g.drawImage(flameTrail.get(i).getSprite(), flameTrail.get(i).getX(), flameTrail.get(i).getY(), null);
+            }
+        }
     }
 }

@@ -49,6 +49,10 @@ public class Entity {
         return height;
     }
 
+    public BufferedImage getSprite() {
+        return sprite;
+    }
+
     public void destroy() {
         Game.entities.remove(this);
     }
