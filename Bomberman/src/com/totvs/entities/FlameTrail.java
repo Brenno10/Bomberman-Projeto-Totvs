@@ -14,8 +14,7 @@ public class FlameTrail extends Entity {
         for (int i = 0; i < Game.entities.size(); i++) {
             if (Game.entities.get(i) instanceof Player) {
                 if (Game.entities.get(i).getHitBox().intersects(this.getHitBox())) {
-                    ((Player) Game.entities.get(i)).isDead = true;
-                    ((Player) Game.entities.get(i)).frames = 0;
+
                 }
             }
         }

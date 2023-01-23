@@ -15,10 +15,11 @@ public class Player extends Entity {
     public int placedBombs = 0;
     public int bombPower = 1;
     public boolean isDead = false;
-    public int frames = 0, index, deathIndex;
+    public int frames = 0, index;
+    public boolean isOnTop = false;
+    public boolean hitBomb = false;
 
-    private boolean hitBomb = false;
-    private final int maxFrames = 6, maxIndex = 2, maxDeathIndex = 4;
+    private final int maxFrames = 6, maxIndex = 2;
     private boolean moved = false;
 
     private final BufferedImage[] rightPlayer;
@@ -61,9 +62,11 @@ public class Player extends Entity {
     public void checkCollision() {
         hitBomb = false;
         for (int i = 0; i < Game.entities.size(); i++) {
-            if (Game.entities.get(i) instanceof Bomb)
-                if (this.getHitBox().intersects(Game.entities.get(i).getHitBox()))
-                    hitBomb = true;
+            if (Game.entities.get(i) instanceof Bomb) {
+                if (this.getHitBox().intersects(Game.entities.get(i).getHitBox())) {
+                    // HEEEEEELP ;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;
+                }
+            }
         }
     }
 
@@ -74,21 +77,25 @@ public class Player extends Entity {
             checkCollision();
             moved = false;
 
-            if (right && World.isFree((int) (this.getX() + speed), this.getY()) && !hitBomb) {
+            if (right && World.isFree((int) (this.getX() + speed), this.getY()) && !hitBomb ||
+            right && World.isFree((int) (this.getX() + speed), this.getY()) && isOnTop) {
                 moved = true;
                 dir = rightDir;
                 x += speed;
-            } else if (left && World.isFree((int) (this.getX() - speed), this.getY())) {
+            } else if (left && World.isFree((int) (this.getX() - speed), this.getY()) && !hitBomb ||
+                    left && World.isFree((int) (this.getX() - speed), this.getY()) && isOnTop) {
                 moved = true;
                 dir = leftDir;
                 x -= speed - 0.7;
             }
 
-            if (up && World.isFree(this.getX(), (int) (this.getY() - speed))) {
+            if (up && World.isFree(this.getX(), (int) (this.getY() - speed)) && !hitBomb ||
+                    up && World.isFree(this.getX(), (int) (this.getY() - speed)) && isOnTop) {
                 moved = true;
                 dir = upDir;
                 y -= speed - 0.7;
-            } else if (down && World.isFree(this.getX(), (int) (this.getY() + speed))) {
+            } else if (down && World.isFree(this.getX(), (int) (this.getY() + speed)) && !hitBomb ||
+                    down && World.isFree(this.getX(), (int) (this.getY() + speed)) && isOnTop) {
                 moved = true;
                 dir = downDir;
                 y += speed;

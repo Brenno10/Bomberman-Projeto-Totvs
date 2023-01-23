@@ -13,12 +13,8 @@ public class Bomb extends Entity {
     private int frames = 0, index, timer = 0;
     private final int  maxFrames = 24, maxIndex = 3, maxTimer = 160, maxExFrames = 3;
     private Player whoPlaced;
-    private boolean exploded = false;
     private boolean iExploded = false;
-    private boolean upFree = true;
-    private boolean downFree = true;
-    private boolean leftFree = true;
-    private boolean rightFree = true;
+    private boolean upFree = true, downFree = true, leftFree = true, rightFree = true;
     protected boolean canBePlaced = true;
 
     private BufferedImage currentFrame;
@@ -34,6 +30,7 @@ public class Bomb extends Entity {
     private final BufferedImage[] downFlameTrailTip;
 
     private final List<FlameTrail> flameTrail;
+    private FlameTrail explosionCenter;
 
     public Bomb(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
@@ -111,12 +108,12 @@ public class Bomb extends Entity {
 
         Bomb bomb = new Bomb(x, y, 16, 16,
                 bombSprite.getSprite(0, 0, 16, 16));
-
+        bomb.whoPlaced = player;
         bomb.checkCollision();
 
         if (bomb.canBePlaced) {
             Game.entities.add(bomb);
-            bomb.whoPlaced = player;
+            bomb.whoPlaced.isOnTop = true;
             bomb.whoPlaced.placedBombs++;
         } else
             bomb.destroy();
@@ -126,6 +123,9 @@ public class Bomb extends Entity {
         int power = whoPlaced.bombPower;
         if (power >= 4)
             power = 4;
+
+        explosionCenter = new FlameTrail(this.getX(), this.getY(), 16, 16, null);
+        this.flameTrail.add(explosionCenter);
 
         for (int xx = 1; xx <= whoPlaced.bombPower + 1; xx++) {
             if (xx <= whoPlaced.bombPower) {
@@ -192,63 +192,66 @@ public class Bomb extends Entity {
 
     @Override
     public void checkCollision() {
-        canBePlaced = true;
-        for (Entity e : Game.entities) {
-            if (this.getHitBox().x == e.getHitBox().x && this.getHitBox().y == e.getHitBox().y) {
-                canBePlaced = false;
-                return;
+        if (canBePlaced) {
+            for (Entity e : Game.entities) {
+                if (this.getHitBox().x == e.getHitBox().x && this.getHitBox().y == e.getHitBox().y) {
+                    canBePlaced = false;
+                    return;
+                }
             }
         }
+        if (whoPlaced.isOnTop)
+            whoPlaced.isOnTop = whoPlaced.getHitBox().intersects(this.getHitBox());
     }
 
     @Override
     public void tick() {
-        if (!exploded) {
-            this.updateHitbox(0, 0);
-            for (int i = 0; i < flameTrail.size(); i++) {
-                flameTrail.get(i).checkCollision();
-            }
-            frames++;
-            timer++;
+        this.updateHitbox(0, 0);
+        this.checkCollision();
 
-            // animação
-            if (frames == maxFrames && timer < maxTimer) {
-                currentFrame = bombFrames[index];
-                frames = 0;
+        for (int i = 0; i < flameTrail.size(); i++) {
+            flameTrail.get(i).checkCollision();
+        }
+        frames++;
+        timer++;
+
+        // animação
+        if (frames == maxFrames && timer < maxTimer) {
+            currentFrame = bombFrames[index];
+            frames = 0;
+            index++;
+
+            if (index > maxIndex) {
+                index = 0;
+            }
+        }
+
+        // timer da bomba
+        if (timer >= maxTimer && timer < maxTimer + maxExFrames + 8) {
+            explode();
+            currentFrame = explosionFrames[index];
+            frames = 0;
+        }
+
+        if (timer == maxTimer + maxExFrames + 8) {
+            this.flameTrail.clear();
+            explosionCenter.destroy();
+            index = 5;
+            frames = 0;
+        }
+
+        if (timer >= maxTimer + maxExFrames) {
+            currentFrame = explosionFrames[index];
+            if (frames == maxExFrames) {
                 index++;
-
-                if (index > maxIndex) {
-                    index = 0;
-                }
-            }
-
-            // timer da bomba
-            if (timer >= maxTimer && timer < maxTimer + maxExFrames + 8) {
-                explode();
-                currentFrame = explosionFrames[index];
                 frames = 0;
             }
 
-            if (timer == maxTimer + maxExFrames + 8) {
-                this.flameTrail.clear();
-                index = 5;
-                frames = 0;
-            }
-
-            if (timer >= maxTimer + maxExFrames) {
-                currentFrame = explosionFrames[index];
-                if (frames == maxExFrames) {
-                    index++;
-                    frames = 0;
-                }
-
-                if (index == this.explosionFrames.length - 1) {
-                    this.destroy();
-                    whoPlaced.placedBombs--;
-                    exploded = true;
-                    timer = 0;
-                    index = 0;
-                }
+            if (index == this.explosionFrames.length - 1) {
+                this.destroy();
+                whoPlaced.placedBombs--;
+                timer = 0;
+                index = 0;
             }
         }
     }
