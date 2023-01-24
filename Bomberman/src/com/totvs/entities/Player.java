@@ -62,9 +62,15 @@ public class Player extends Entity {
     public void checkCollision() {
         hitBomb = false;
         for (int i = 0; i < Game.entities.size(); i++) {
-            if (Game.entities.get(i) instanceof Bomb) {
+            if (Game.entities.get(i) instanceof Bomb && !isOnTop) {
                 if (this.getHitBox().intersects(Game.entities.get(i).getHitBox())) {
-                    // HEEEEEELP ;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;-;
+                    switch (dir) {
+                        case 0 -> this.y -= this.speed;
+                        case 1 -> this.x += this.speed;
+                        case 2 -> this.y += this.speed;
+                        case 3 -> this.x -= this.speed;
+                    }
+                    hitBomb = true;
                 }
             }
         }

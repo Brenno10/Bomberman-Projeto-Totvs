@@ -75,6 +75,11 @@ public abstract class Entity {
         Game.entities.remove(this);
     }
 
+    public void destroyHitBox() {
+        this.hitBox.width = 0;
+        this.hitBox.height = 0;
+    }
+
     public void tick() {
     }
 

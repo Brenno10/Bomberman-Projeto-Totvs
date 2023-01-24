@@ -187,6 +187,7 @@ public class Bomb extends Entity {
         }
 
         iExploded = true;
+        this.destroyHitBox();
         index = power;
     }
 
