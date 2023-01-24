@@ -17,6 +17,7 @@ public class Player extends Entity {
     public boolean isDead = false;
     public int frames = 0, index;
     public boolean hitBomb = false;
+    public int[] playerColor;
 
     private final int maxFrames = 6, maxIndex = 2;
     private boolean moved = false;
@@ -27,8 +28,9 @@ public class Player extends Entity {
     private final BufferedImage[] downPlayer;
     private final BufferedImage[] playerDeath;
 
-    public Player(int x, int y, int width, int height, BufferedImage sprite) {
+    public Player(int x, int y, int width, int height, BufferedImage sprite, int[] playerColor) {
         super(x, y, width, height, sprite);
+        this.playerColor = playerColor;
 
         rightPlayer = new BufferedImage[3];
         leftPlayer = new BufferedImage[3];
@@ -64,10 +66,22 @@ public class Player extends Entity {
             if (Game.entities.get(i) instanceof Bomb && !((Bomb) Game.entities.get(i)).isOnTop) {
                 if (this.getHitBox().intersects(Game.entities.get(i).getHitBox())) {
                     switch (dir) {
-                        case 0 -> this.y -= this.speed;
-                        case 1 -> this.x += this.speed;
-                        case 2 -> this.y += this.speed;
-                        case 3 -> this.x -= this.speed;
+                        case 0 -> {
+                            if (World.isFree(this.x, this.y -= this.speed))
+                                this.y -= this.speed;
+                        }
+                        case 1 -> {
+                            if (World.isFree(this.x += this.speed, this.y))
+                                this.x += this.speed;
+                        }
+                        case 2 -> {
+                            if (World.isFree(this.x, this.y += this.speed))
+                                this.y += this.speed;
+                        }
+                        case 3 -> {
+                            if (World.isFree(this.x -= this.speed, this.y))
+                                this.x -= this.speed;
+                        }
                     }
                     hitBomb = true;
                 }

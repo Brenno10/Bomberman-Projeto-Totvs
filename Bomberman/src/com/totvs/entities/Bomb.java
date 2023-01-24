@@ -1,5 +1,6 @@
 package com.totvs.entities;
 
+import com.totvs.graphics.BombColors;
 import com.totvs.graphics.Spritesheet;
 import com.totvs.main.Game;
 import com.totvs.world.World;
@@ -33,7 +34,7 @@ public class Bomb extends Entity {
     private final List<FlameTrail> flameTrail;
     private FlameTrail explosionCenter;
 
-    public Bomb(int x, int y, int width, int height, BufferedImage sprite) {
+    public Bomb(int x, int y, int width, int height, BufferedImage sprite, int[] bombColor) {
         super(x, y, width, height, sprite);
 
         bombFrames = new BufferedImage[4];
@@ -51,39 +52,50 @@ public class Bomb extends Entity {
 
         // frames da bomba
         for (int i = 0; i < bombFrames.length; i++) {
-            bombFrames[i] = Game.bombSprite.getSprite(i * 16, 0, 16, 16);
+            bombFrames[i] =
+                    Game.bombSprite.getSprite(bombColor[0] + (i * 16), bombColor[1], 16, 16);
         }
 
         // frames da explosão
         for (int i = 0; i < explosionFrames.length - 7; i++) {
-            explosionFrames[i] = Game.bombSprite.getSprite(96, (i * 16) + 16, 16, 16);
+            explosionFrames[i] =
+                    Game.bombSprite.getSprite(bombColor[0] + 96, bombColor[1] + (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < explosionFrames.length - 5; i++) {
-            explosionFrames[i + 5] = Game.bombSprite.getSprite(112, (i * 16) + 16, 16, 16);
+            explosionFrames[i + 5] =
+                    Game.bombSprite.getSprite(bombColor[0] + 112, bombColor[1] + (i * 16) + 16, 16, 16);
         }
-        explosionFrames[10] = Game.bombSprite.getSprite(64, 112, 16, 16);
-        explosionFrames[11] = Game.bombSprite.getSprite(80, 112, 16, 16);
+        explosionFrames[10] =
+                Game.bombSprite.getSprite(bombColor[0] + 64, bombColor[1] + 112, 16, 16);
+        explosionFrames[11] =
+                Game.bombSprite.getSprite(80, 112, 16, 16);
 
         // sprites da trilha de fogo horizontal
         for (int i = 0; i < horizontalFlameTrail.length; i++) {
-            horizontalFlameTrail[i] = Game.bombSprite.getSprite(80, (i * 16) + 16, 16, 16);
+            horizontalFlameTrail[i] =
+                    Game.bombSprite.getSprite(bombColor[0] + 80, bombColor[1] + (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < leftFlameTrailTip.length; i++) {
-            leftFlameTrailTip[i] = Game.bombSprite.getSprite(32, (i * 16) + 16, 16, 16);
+            leftFlameTrailTip[i] =
+                    Game.bombSprite.getSprite(bombColor[0] + 32, bombColor[1] + (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < rightFlameTrailTip.length; i++) {
-            rightFlameTrailTip[i] = Game.bombSprite.getSprite(48, (i * 16) + 16, 16, 16);
+            rightFlameTrailTip[i] =
+                    Game.bombSprite.getSprite(bombColor[0] + 48, bombColor[1] + (i * 16) + 16, 16, 16);
         }
 
         // sprites da trilha de fogo vertical
         for (int i = 0; i < verticalFlameTrail.length; i++) {
-            verticalFlameTrail[i] = Game.bombSprite.getSprite(64, (i * 16) + 16, 16, 16);
+            verticalFlameTrail[i] =
+                    Game.bombSprite.getSprite(bombColor[0] + 64, bombColor[1] + (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < upFlameTrailTip.length; i++) {
-            upFlameTrailTip[i] = Game.bombSprite.getSprite(0, (i * 16) + 16, 16, 16);
+            upFlameTrailTip[i] =
+                    Game.bombSprite.getSprite(bombColor[0], bombColor[1] + (i * 16) + 16, 16, 16);
         }
         for (int i = 0; i < downFlameTrailTip.length; i++) {
-            downFlameTrailTip[i] = Game.bombSprite.getSprite(16, (i * 16) + 16, 16, 16);
+            downFlameTrailTip[i] =
+                    Game.bombSprite.getSprite(bombColor[0] + 16, bombColor[1] + (i * 16) + 16, 16, 16);
         }
 
         // frame atual da animação
@@ -108,7 +120,7 @@ public class Bomb extends Entity {
         }
 
         Bomb bomb = new Bomb(x, y, 16, 16,
-                bombSprite.getSprite(0, 0, 16, 16));
+                bombSprite.getSprite(0, 0, 16, 16), player.playerColor);
         bomb.whoPlaced = player;
         bomb.checkCollision();
 

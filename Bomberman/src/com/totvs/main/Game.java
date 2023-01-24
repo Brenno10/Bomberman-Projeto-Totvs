@@ -3,6 +3,7 @@ package com.totvs.main;
 import com.totvs.entities.Bomb;
 import com.totvs.entities.Entity;
 import com.totvs.entities.Player;
+import com.totvs.graphics.BombColors;
 import com.totvs.graphics.Spritesheet;
 import com.totvs.world.World;
 
@@ -48,11 +49,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         // iniciando entidades
         player1 = new Player(0 , 0, 8, 10,
-                player1Spritesheet.getSprite(0, 69, 16, 26));
+                player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.VIOLET);
         entities.add(player1);
 
         player2 = new Player(0 , 0, 8, 10,
-                player1Spritesheet.getSprite(0, 69, 16, 26));
+                player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.WHITE);
         entities.add(player2);
 
         // iniciando o mapa
