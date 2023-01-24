@@ -10,14 +10,12 @@ public class Player extends Entity {
     public boolean right, up, left, down;
     public final int downDir = 0, leftDir = 1, upDir = 2, rightDir = 3;
     public int dir = 0;
-    public double speed = 2;
-    public int maxBombsAmount = 3;
-    public int placedBombs = 0;
-    public int bombPower = 1;
-    public boolean isDead = false;
+    public int maxBombsAmount = 3, placedBombs = 0, bombPower = 1;
     public int frames = 0, index;
-    public boolean hitBomb = false;
     public int[] playerColor;
+    public double speed = 2;
+    public boolean isDead = false;
+    public boolean hitBomb = false;
 
     private final int maxFrames = 6, maxIndex = 2;
     private boolean moved = false;
@@ -53,9 +51,9 @@ public class Player extends Entity {
         return placedBombs < maxBombsAmount;
     }
 
-    public void deathAnimationLoop() {
+    private void deathAnimationLoop() {
         if (frames == 30) {
-            
+            frames = 0;
         }
     }
 
@@ -142,9 +140,9 @@ public class Player extends Entity {
             }
         }
         else {
+            this.deathAnimationLoop();
             frames++;
-
-        }deathAnimationLoop();
+        }
     }
 
     public void render(Graphics g) {

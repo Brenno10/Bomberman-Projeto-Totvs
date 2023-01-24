@@ -49,7 +49,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         // iniciando entidades
         player1 = new Player(0 , 0, 8, 10,
-                player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.VIOLET);
+                player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.GOLDEN);
         entities.add(player1);
 
         player2 = new Player(0 , 0, 8, 10,
