@@ -16,7 +16,6 @@ public class Player extends Entity {
     public int bombPower = 1;
     public boolean isDead = false;
     public int frames = 0, index;
-    public boolean isOnTop = false;
     public boolean hitBomb = false;
 
     private final int maxFrames = 6, maxIndex = 2;
@@ -62,7 +61,7 @@ public class Player extends Entity {
     public void checkCollision() {
         hitBomb = false;
         for (int i = 0; i < Game.entities.size(); i++) {
-            if (Game.entities.get(i) instanceof Bomb && !isOnTop) {
+            if (Game.entities.get(i) instanceof Bomb && !((Bomb) Game.entities.get(i)).isOnTop) {
                 if (this.getHitBox().intersects(Game.entities.get(i).getHitBox())) {
                     switch (dir) {
                         case 0 -> this.y -= this.speed;
@@ -82,6 +81,13 @@ public class Player extends Entity {
             this.updateHitbox(3, 3);
             checkCollision();
             moved = false;
+            boolean isOnTop = false;
+
+            for (int i = 0; i < Game.entities.size(); i++) {
+                if (Game.entities.get(i) instanceof Bomb) {
+                    isOnTop = ((Bomb) Game.entities.get(i)).isOnTop;
+                }
+            }
 
             if (right && World.isFree((int) (this.getX() + speed), this.getY()) && !hitBomb ||
             right && World.isFree((int) (this.getX() + speed), this.getY()) && isOnTop) {

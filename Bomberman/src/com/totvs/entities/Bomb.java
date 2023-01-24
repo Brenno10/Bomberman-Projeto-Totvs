@@ -16,6 +16,7 @@ public class Bomb extends Entity {
     private boolean iExploded = false;
     private boolean upFree = true, downFree = true, leftFree = true, rightFree = true;
     protected boolean canBePlaced = true;
+    protected boolean isOnTop = false;
 
     private BufferedImage currentFrame;
     private final BufferedImage[] bombFrames;
@@ -113,7 +114,7 @@ public class Bomb extends Entity {
 
         if (bomb.canBePlaced) {
             Game.entities.add(bomb);
-            bomb.whoPlaced.isOnTop = true;
+            bomb.isOnTop = true;
             bomb.whoPlaced.placedBombs++;
         } else
             bomb.destroy();
@@ -201,8 +202,8 @@ public class Bomb extends Entity {
                 }
             }
         }
-        if (whoPlaced.isOnTop)
-            whoPlaced.isOnTop = whoPlaced.getHitBox().intersects(this.getHitBox());
+        if (this.isOnTop)
+            this.isOnTop = whoPlaced.getHitBox().intersects(this.getHitBox());
     }
 
     @Override

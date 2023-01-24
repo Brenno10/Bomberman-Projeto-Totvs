@@ -191,6 +191,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             player2.down = true;
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_K && player2.hasBombs()) {
+            Bomb.placeBomb(player2.getX(), player2.getY(), Game.bombSprite, player2);
+        }
     }
 
     // Botão solto
