@@ -10,12 +10,12 @@ public class Player extends Entity {
     public boolean right, up, left, down;
     public final int downDir = 0, leftDir = 1, upDir = 2, rightDir = 3;
     public int dir = 0;
-    public int maxBombsAmount = 3, placedBombs = 0, bombPower = 1;
-    public int frames = 0, index;
+    public int placedBombs = 0;
+    public int maxBombsAmount = 3, bombPower = 1, penetrationPower = 1;
+    public int frames = 0, deathAnimation = 14  , index;
     public int[] playerColor;
     public double speed = 2;
-    public boolean isDead = false;
-    public boolean hitBomb = false;
+    public boolean hitBomb = false, isDead = false;
 
     private final int maxFrames = 6, maxIndex = 2;
     private boolean moved = false;
@@ -34,7 +34,7 @@ public class Player extends Entity {
         leftPlayer = new BufferedImage[3];
         upPlayer = new BufferedImage[3];
         downPlayer = new BufferedImage[3];
-        playerDeath = new BufferedImage[5];
+        playerDeath = new BufferedImage[6];
 
         for (int i = 0; i < rightPlayer.length; i++) {
             rightPlayer[i] = Game.player1Spritesheet.getSprite(i * 16, 39, 16, 26);
@@ -43,18 +43,13 @@ public class Player extends Entity {
             downPlayer[i] = Game.player1Spritesheet.getSprite(i * 16, 69, 16, 26);
         }
         for (int i = 0; i < playerDeath.length; i++) {
-            playerDeath[i] = Game.player1Spritesheet.getSprite(i * 16, 139, 16, 26);
+            playerDeath[i] = Game.player1Spritesheet.getSprite(i * 16, 359, 15, 23);
         }
+        playerDeath[5] = playerDeath[2];
     }
 
     public boolean hasBombs() {
         return placedBombs < maxBombsAmount;
-    }
-
-    private void deathAnimationLoop() {
-        if (frames == 30) {
-            frames = 0;
-        }
     }
 
     @Override
@@ -90,7 +85,7 @@ public class Player extends Entity {
     @Override
     public void tick() {
         if (!isDead) {
-            this.updateHitbox(3, 3);
+            this.updateHitbox(3, 2);
             checkCollision();
             moved = false;
             boolean isOnTop = false;
@@ -140,8 +135,19 @@ public class Player extends Entity {
             }
         }
         else {
-            this.deathAnimationLoop();
+            dir = -1;
             frames++;
+
+            if (frames == deathAnimation) {
+                frames = 0;
+                index++;
+                if (index > 2) {
+                    deathAnimation = 10;
+                }
+                if (index > playerDeath.length - 1) {
+                    index = 2;
+                }
+            }
         }
     }
 
@@ -153,6 +159,6 @@ public class Player extends Entity {
             case 3 -> g.drawImage(rightPlayer[index], this.getX(), this.getY() - 10, null);
             default -> g.drawImage(playerDeath[index], this.getX(), this.getY() - 10, null);
         }
-        this.drawHitbox(g);
+//        this.drawHitbox(g);
     }
 }

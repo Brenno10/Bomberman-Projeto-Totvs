@@ -35,10 +35,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public static Player player2;
 
     public Game() {
-        addKeyListener(this);
-        this.setPreferredSize(new Dimension(WIDTH , HEIGHT));
-        initFrame();
-
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         entities = new ArrayList<>();
 
@@ -48,16 +44,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
         bombSprite = new Spritesheet("/bombs_spritesheet.png");
 
         // iniciando entidades
-        player1 = new Player(0 , 0, 8, 10,
+        player1 = new Player(0 , 0, 8, 8,
                 player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.GOLDEN);
         entities.add(player1);
 
-        player2 = new Player(0 , 0, 8, 10,
+        player2 = new Player(0 , 0, 8, 8,
                 player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.WHITE);
         entities.add(player2);
 
         // iniciando o mapa
         world = new World("/test_map.png");
+        addKeyListener(this);
+        initFrame();
     }
 
     // inicia a janela
@@ -65,7 +63,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
         frame = new JFrame("Bomberman");
         frame.add(this);
         frame.setResizable(false);
-        frame.setSize(800, 800);
+        frame.setSize(((World.map.getWidth() * 16) * SCALE) + 16,
+                ((World.map.getHeight() * 16) * SCALE) + 39);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -94,6 +93,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public void tick() {
         for (int i = 0; i < entities.size(); i++) {
             entities.get(i).tick();
+        }
+        for (int i = 0; i < World.tiles.length; i++) {
+            World.tiles[i].tick();
         }
     }
 
@@ -176,7 +178,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
             player1.down = true;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_E && player1.hasBombs()) {
+        if (e.getKeyCode() == KeyEvent.VK_E && player1.hasBombs() && !player1.isDead) {
             Bomb.placeBomb(player1.getX(), player1.getY(), Game.bombSprite, player1);
         }
 
@@ -193,7 +195,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
             player2.down = true;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_K && player2.hasBombs()) {
+        if (e.getKeyCode() == KeyEvent.VK_K && player2.hasBombs() && !player2.isDead) {
             Bomb.placeBomb(player2.getX(), player2.getY(), Game.bombSprite, player2);
         }
     }

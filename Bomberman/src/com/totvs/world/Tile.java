@@ -31,6 +31,14 @@ public abstract class Tile {
         return sprite;
     }
 
+    public void destroy() {
+        for (int i = 0; i < World.tiles.length; i++) {
+            if (World.tiles[i].getX() == x && World.tiles[i].getY() == y) {
+                World.tiles[i] = new FloorTile(this.getX(), this.getY(), Tile.TILE_FLOOR);
+            }
+        }
+    }
+
     public void tick() {
 
     }
