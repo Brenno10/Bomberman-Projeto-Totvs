@@ -42,10 +42,11 @@ public class Player extends Entity {
             upPlayer[i] = Game.player1Spritesheet.getSprite(i * 16, 7, 16, 26);
             downPlayer[i] = Game.player1Spritesheet.getSprite(i * 16, 69, 16, 26);
         }
-        for (int i = 0; i < playerDeath.length; i++) {
+        for (int i = 0; i < playerDeath.length - 1; i++) {
             playerDeath[i] = Game.player1Spritesheet.getSprite(i * 16, 359, 15, 23);
         }
-        playerDeath[5] = playerDeath[2];
+        playerDeath[5] = playerDeath[4];
+        playerDeath[4] = playerDeath[2];
     }
 
     public boolean hasBombs() {
@@ -141,8 +142,8 @@ public class Player extends Entity {
             if (frames == deathAnimation) {
                 frames = 0;
                 index++;
-                if (index > 2) {
-                    deathAnimation = 10;
+                if (index > 2 && index < playerDeath.length - 1) {
+                    deathAnimation = 9;
                 }
                 if (index > playerDeath.length - 1) {
                     index = 2;
