@@ -142,12 +142,10 @@ public class Player extends Entity {
             if (frames == deathAnimation) {
                 frames = 0;
                 index++;
-                if (index > 2 && index < playerDeath.length - 1) {
+                if (index > 2 && index < playerDeath.length - 1)
                     deathAnimation = 9;
-                }
-                if (index > playerDeath.length - 1) {
+                if (index > playerDeath.length - 1)
                     index = 2;
-                }
             }
         }
     }
@@ -160,6 +158,5 @@ public class Player extends Entity {
             case 3 -> g.drawImage(rightPlayer[index], this.getX(), this.getY() - 10, null);
             default -> g.drawImage(playerDeath[index], this.getX(), this.getY() - 10, null);
         }
-//        this.drawHitbox(g);
     }
 }

@@ -37,13 +37,13 @@ public class World {
                 for (int yy = 0; yy < map.getHeight(); yy++) {
                     int pixelAtual = pixels[xx + (yy * map.getWidth())];
 
-                    if (pixelAtual == 0xff000000) {
+                    if (pixelAtual == 0xff000000)
                         // chão / preto
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
-                    } else if (pixelAtual == 0xffffffff) {
+                    else if (pixelAtual == 0xffffffff)
                         // paredes indestrutivel / branco
                         tiles[xx + (yy * WIDTH)] = new UndestructibleTile(xx * 16, yy * 16, Tile.TILE_WALL);
-                    } else if (pixelAtual == 0xffff0000) {
+                    else if (pixelAtual == 0xffff0000) {
                         // parede destrutivel / vermelho
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
                         tiles[xx + (yy * WIDTH)] = new DestructibleTile(xx * 16, yy * 16, Tile.TILE_DEST_WALL);
@@ -53,9 +53,8 @@ public class World {
                         players.get(playerCount).setX(xx * 16);
                         players.get(playerCount).setY(yy * 16);
                         playerCount++;
-                    } else {
+                    } else
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
-                    }
                 }
             }
         } catch (IOException e) {
@@ -125,9 +124,8 @@ public class World {
 
     public static void removeTile(int x, int y) {
         for (int i = 0; i < tiles.length; i++) {
-            if (tiles[i].getX() == x && tiles[i].getY() == y) {
+            if (tiles[i].getX() == x && tiles[i].getY() == y)
                 ((DestructibleTile) tiles[i]).wasDestroyed = true;
-            }
         }
     }
 

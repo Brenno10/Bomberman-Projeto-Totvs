@@ -149,18 +149,16 @@ public class Bomb extends Entity {
                     flameTrail.add(new FlameTrail(this.getX() + xx * 16, this.getY(),
                             16, 16, horizontalFlameTrail[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX() + xx * 16, this.getY()) == 1 && rightFree) {
+                    if (World.whichTileWasHit(this.getX() + xx * 16, this.getY()) == 1 && rightFree)
                         World.removeTile(this.getX() + xx * 16, this.getY());
-                    }
                     rightFree = false;
                 }
                 if (World.isFree(this.getX() - xx * 16, this.getY()) && leftFree) {
                     flameTrail.add(new FlameTrail(this.getX() - xx * 16, this.getY(),
                             16, 16, horizontalFlameTrail[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX() - xx * 16, this.getY()) == 1 && leftFree){
+                    if (World.whichTileWasHit(this.getX() - xx * 16, this.getY()) == 1 && leftFree)
                         World.removeTile(this.getX() - xx * 16, this.getY());
-                    }
                     leftFree = false;
                 }
             } else {
@@ -168,18 +166,16 @@ public class Bomb extends Entity {
                     flameTrail.add(new FlameTrail(this.getX() + xx * 16, this.getY(),
                             16, 16, rightFlameTrailTip[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX() + xx * 16, this.getY()) == 1 && rightFree){
+                    if (World.whichTileWasHit(this.getX() + xx * 16, this.getY()) == 1 && rightFree)
                         World.removeTile(this.getX() + xx * 16, this.getY());
-                    }
                     rightFree = false;
                 }
                 if (World.isFree(this.getX() - xx * 16, this.getY()) && leftFree) {
                     flameTrail.add(new FlameTrail(this.getX() - xx * 16, this.getY(),
                             16, 16, leftFlameTrailTip[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX() - xx * 16, this.getY()) == 1 && leftFree){
+                    if (World.whichTileWasHit(this.getX() - xx * 16, this.getY()) == 1 && leftFree)
                         World.removeTile(this.getX() - xx * 16, this.getY());
-                    }
                     leftFree = false;
                 }
             }
@@ -191,18 +187,16 @@ public class Bomb extends Entity {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() + yy * 16,
                             16, 16, verticalFlameTrail[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX(), this.getY() + yy * 16) == 1 && downFree){
+                    if (World.whichTileWasHit(this.getX(), this.getY() + yy * 16) == 1 && downFree)
                         World.removeTile(this.getX(), this.getY() + yy * 16);
-                    }
                     downFree = false;
                 }
                 if (World.isFree(this.getX(), this.getY() - yy * 16) && upFree) {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() - yy * 16,
                             16, 16, verticalFlameTrail[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX(), this.getY() - yy * 16) == 1 && upFree){
+                    if (World.whichTileWasHit(this.getX(), this.getY() - yy * 16) == 1 && upFree)
                         World.removeTile(this.getX(), this.getY() - yy * 16);
-                    }
                     upFree = false;
                 }
             } else {
@@ -210,18 +204,16 @@ public class Bomb extends Entity {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() + yy * 16,
                             16, 16, downFlameTrailTip[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX(), this.getY() + yy * 16) == 1 && downFree){
+                    if (World.whichTileWasHit(this.getX(), this.getY() + yy * 16) == 1 && downFree)
                         World.removeTile(this.getX(), this.getY() + yy * 16);
-                    }
                     downFree = false;
                 }
                 if (World.isFree(this.getX(), this.getY() - yy * 16) && upFree) {
                     flameTrail.add(new FlameTrail(this.getX(), this.getY() - yy * 16,
                             16, 16, upFlameTrailTip[power]));
                 } else {
-                    if (World.whichTileWasHit(this.getX(), this.getY() - yy * 16) == 1 && upFree){
+                    if (World.whichTileWasHit(this.getX(), this.getY() - yy * 16) == 1 && upFree)
                         World.removeTile(this.getX(), this.getY() - yy * 16);
-                    }
                     upFree = false;
                 }
             }
@@ -263,9 +255,8 @@ public class Bomb extends Entity {
             frames = 0;
             index++;
 
-            if (index > maxIndex) {
+            if (index > maxIndex)
                 index = 0;
-            }
         }
 
         // timer da bomba
@@ -306,9 +297,5 @@ public class Bomb extends Entity {
                 g.drawImage(trail.getSprite(), trail.getX(), trail.getY(), null);
             }
         }
-//        this.drawHitbox(g);
-//        for (int i = 0; i < flameTrail.size(); i++) {
-//            flameTrail.get(i).drawHitbox(g);
-//        }
     }
 }

@@ -25,9 +25,8 @@ public class FlameTrail extends Entity {
                 }
             }
             if (Game.entities.get(i) instanceof Bomb && !((Bomb) Game.entities.get(i)).isOnTop) {
-                if (this.getHitBox().intersects(Game.entities.get(i).getHitBox())) {
+                if (this.getHitBox().intersects(Game.entities.get(i).getHitBox()))
                     ((Bomb) Game.entities.get(i)).setTimer(160);
-                }
             }
         }
     }

@@ -166,67 +166,57 @@ public class Game extends Canvas implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         // jogador 1
-        if (e.getKeyCode() == KeyEvent.VK_D) {
+        if (e.getKeyCode() == KeyEvent.VK_D)
             player1.right = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_A) {
+        else if (e.getKeyCode() == KeyEvent.VK_A)
             player1.left = true;
-        }
 
-        if (e.getKeyCode() == KeyEvent.VK_W) {
+        if (e.getKeyCode() == KeyEvent.VK_W)
             player1.up = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+        else if (e.getKeyCode() == KeyEvent.VK_S)
             player1.down = true;
-        }
 
-        if (e.getKeyCode() == KeyEvent.VK_E && player1.hasBombs() && !player1.isDead) {
+        if (e.getKeyCode() == KeyEvent.VK_E && player1.hasBombs() && !player1.isDead)
             Bomb.placeBomb(player1.getX(), player1.getY(), Game.bombSprite, player1);
-        }
 
         // jogador 2
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT)
             player2.right = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT)
             player2.left = true;
-        }
 
-        if (e.getKeyCode() == KeyEvent.VK_UP) {
+        if (e.getKeyCode() == KeyEvent.VK_UP)
             player2.up = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+        else if (e.getKeyCode() == KeyEvent.VK_DOWN)
             player2.down = true;
-        }
 
-        if (e.getKeyCode() == KeyEvent.VK_K && player2.hasBombs() && !player2.isDead) {
+        if (e.getKeyCode() == KeyEvent.VK_K && player2.hasBombs() && !player2.isDead)
             Bomb.placeBomb(player2.getX(), player2.getY(), Game.bombSprite, player2);
-        }
     }
 
     // Botão solto
     @Override
     public void keyReleased(KeyEvent e) {
         // jogador 1
-        if (e.getKeyCode() == KeyEvent.VK_D) {
+        if (e.getKeyCode() == KeyEvent.VK_D)
             player1.right = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_A) {
+        else if (e.getKeyCode() == KeyEvent.VK_A)
             player1.left = false;
-        }
 
-        if (e.getKeyCode() == KeyEvent.VK_W) {
+        if (e.getKeyCode() == KeyEvent.VK_W)
             player1.up = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+        else if (e.getKeyCode() == KeyEvent.VK_S)
             player1.down = false;
-        }
 
         // jogador 2
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT)
             player2.right = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT)
             player2.left = false;
-        }
 
-        if (e.getKeyCode() == KeyEvent.VK_UP) {
+        if (e.getKeyCode() == KeyEvent.VK_UP)
             player2.up = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+        else if (e.getKeyCode() == KeyEvent.VK_DOWN)
             player2.down = false;
-        }
     }
 }

@@ -25,9 +25,9 @@ public class DestructibleTile extends Tile {
         if (this.wasDestroyed) {
             this.frames++;
             if (this.frames == this.maxFrames && this.index <= this.maxIndex) {
-                if (index == maxIndex) {
+                if (index == maxIndex)
                     this.destroy();
-                } else {
+                else {
                     this.sprite = this.tileFrame[index];
                     this.index++;
                     this.frames = 0;
