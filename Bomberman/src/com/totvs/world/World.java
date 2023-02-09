@@ -1,6 +1,8 @@
 package com.totvs.world;
 
+import com.totvs.effects.Buff;
 import com.totvs.entities.Player;
+import com.totvs.graphics.Spritesheet;
 import com.totvs.main.Game;
 
 import javax.imageio.ImageIO;
@@ -53,7 +55,15 @@ public class World {
                         players.get(playerCount).setX(xx * 16);
                         players.get(playerCount).setY(yy * 16);
                         playerCount++;
-                    } else
+                    } // temp
+                    else if (pixelAtual == 0xffff00ff) {
+                        tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
+                        Buff buff = new Buff(xx * 16, yy * 16, 16, 16,
+                                new Spritesheet("/mais_bombas_test.png").getSprite(0, 0, 16, 16),
+                                0, 1);
+                        Game.entities.add(buff);
+                    } // temp
+                    else
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
                 }
             }

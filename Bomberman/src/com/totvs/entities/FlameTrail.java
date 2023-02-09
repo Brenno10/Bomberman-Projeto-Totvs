@@ -1,5 +1,6 @@
 package com.totvs.entities;
 
+import com.totvs.effects.Effect;
 import com.totvs.main.Game;
 
 import java.awt.image.BufferedImage;
@@ -27,6 +28,10 @@ public class FlameTrail extends Entity {
             if (Game.entities.get(i) instanceof Bomb && !((Bomb) Game.entities.get(i)).isOnTop) {
                 if (this.getHitBox().intersects(Game.entities.get(i).getHitBox()))
                     ((Bomb) Game.entities.get(i)).setTimer(160);
+            }
+            if (Game.entities.get(i) instanceof Effect) {
+                if (Game.entities.get(i).getHitBox().intersects(this.hitBox))
+                    Game.entities.get(i).destroy();
             }
         }
     }
