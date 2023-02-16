@@ -24,8 +24,12 @@ public class World {
     public World(String path) {
         try {
             map = ImageIO.read(Objects.requireNonNull(getClass().getResource(path)));
-            players.add(Game.player1);
-            players.add(Game.player2);
+
+            for (int i = 0; i < Game.entities.size(); i++) {
+                if (Game.entities.get(i) instanceof Player) {
+                    players.add((Player) Game.entities.get(i));
+                }
+            }
 
             int[] pixels = new int[map.getWidth() * map.getHeight()];
             tiles = new Tile[map.getWidth() * map.getHeight()];

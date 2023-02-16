@@ -4,9 +4,13 @@ import com.totvs.main.Game;
 import com.totvs.world.World;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
+    public String name;
+
     public boolean right, up, left, down;
     public final int downDir = 0, leftDir = 1, upDir = 2, rightDir = 3;
     public int dir = 0;
@@ -26,8 +30,9 @@ public class Player extends Entity {
     private final BufferedImage[] downPlayer;
     private final BufferedImage[] playerDeath;
 
-    public Player(int x, int y, int width, int height, BufferedImage sprite, int[] playerColor) {
+    public Player(String name, int x, int y, int width, int height, BufferedImage sprite, int[] playerColor) {
         super(x, y, width, height, sprite);
+        this.name = name;
         this.playerColor = playerColor;
 
         rightPlayer = new BufferedImage[3];
