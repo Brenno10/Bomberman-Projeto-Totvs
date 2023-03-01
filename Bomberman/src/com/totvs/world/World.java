@@ -17,19 +17,12 @@ public class World {
     public static Tile[] tiles;
     public static int WIDTH, HEIGHT;
     public static final int TILE_SIZE = 16;
-    public static List<Player> players = new ArrayList<>();
-    public static int playerCount = 0;
+    public static List<Integer> playerPos = new ArrayList<>();
     public static BufferedImage map;
 
     public World(String path) {
         try {
             map = ImageIO.read(Objects.requireNonNull(getClass().getResource(path)));
-
-            for (int i = 0; i < Game.entities.size(); i++) {
-                if (Game.entities.get(i) instanceof Player) {
-                    players.add((Player) Game.entities.get(i));
-                }
-            }
 
             int[] pixels = new int[map.getWidth() * map.getHeight()];
             tiles = new Tile[map.getWidth() * map.getHeight()];
@@ -53,12 +46,9 @@ public class World {
                         // parede destrutivel / vermelho
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
                         tiles[xx + (yy * WIDTH)] = new DestructibleTile(xx * 16, yy * 16, Tile.TILE_DEST_WALL);
-                    } else if (pixelAtual == 0xff0000ff && players.size() > playerCount) {
+                    } else if (pixelAtual == 0xff0000ff) {
                         // player / azul
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
-                        players.get(playerCount).setX(xx * 16);
-                        players.get(playerCount).setY(yy * 16);
-                        playerCount++;
                     } // temp
                     else if (pixelAtual == 0xffff00ff) {
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);

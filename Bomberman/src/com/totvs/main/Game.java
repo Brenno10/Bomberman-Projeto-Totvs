@@ -7,6 +7,7 @@ import com.totvs.graphics.BombColors;
 import com.totvs.graphics.Spritesheet;
 import com.totvs.net.GameClient;
 import com.totvs.net.GameServer;
+import com.totvs.net.packet.Packet00Login;
 import com.totvs.world.World;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     public World world;
 
-    public static Player player1;
+    public static Player player;
 
     private static GameClient socketClient;
     private static GameServer socketServer;
@@ -47,10 +48,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
         player1Spritesheet = new Spritesheet("/player1_spritesheet.png");
         bombSprite = new Spritesheet("/bombs_spritesheet.png");
 
-        // iniciando entidades
-        player1 = new Player("p1", 0 , 0, 8, 8,
-                player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.GOLDEN);
-        entities.add(player1);
+//        // iniciando entidades
+//        player = new Player("p1", 0 , 0, 8, 8,
+//                player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.GOLDEN);
+//        entities.add(player);
 
         // iniciando o mapa
         world = new World("/test_map.png");
@@ -85,6 +86,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
         socketClient.start();
 
         socketClient.sendData("ping".getBytes());
+
+        Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(
+                "Por favor, digite o nome de usuário"));
+        loginPacket.writeData(socketClient);
     }
 
     // fecha todas as threads do jogo
@@ -97,6 +102,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public static void main(String[] args) {
         Game game = new Game();
         game.start();
+    }
+
+    public static int getPlayerCount() {
+        return socketServer.connectedPlayers.size();
     }
 
     // Roda a cada frame
@@ -177,17 +186,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public void keyPressed(KeyEvent e) {
         // jogador 1
         if (e.getKeyCode() == KeyEvent.VK_D)
-            player1.right = true;
+            player.right = true;
         else if (e.getKeyCode() == KeyEvent.VK_A)
-            player1.left = true;
+            player.left = true;
 
         if (e.getKeyCode() == KeyEvent.VK_W)
-            player1.up = true;
+            player.up = true;
         else if (e.getKeyCode() == KeyEvent.VK_S)
-            player1.down = true;
+            player.down = true;
 
-        if (e.getKeyCode() == KeyEvent.VK_E && player1.hasBombs() && !player1.isDead)
-            Bomb.placeBomb(player1.getX(), player1.getY(), Game.bombSprite, player1);
+        if (e.getKeyCode() == KeyEvent.VK_E && player.hasBombs() && !player.isDead)
+            Bomb.placeBomb(player.getX(), player.getY(), Game.bombSprite, player);
     }
 
     // Botão solto
@@ -195,13 +204,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public void keyReleased(KeyEvent e) {
         // jogador 1
         if (e.getKeyCode() == KeyEvent.VK_D)
-            player1.right = false;
+            player.right = false;
         else if (e.getKeyCode() == KeyEvent.VK_A)
-            player1.left = false;
+            player.left = false;
 
         if (e.getKeyCode() == KeyEvent.VK_W)
-            player1.up = false;
+            player.up = false;
         else if (e.getKeyCode() == KeyEvent.VK_S)
-            player1.down = false;
+            player.down = false;
     }
 }

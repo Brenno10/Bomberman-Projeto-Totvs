@@ -13,4 +13,9 @@ public class PlayerMP extends Player {
         this.ipAddress = ipAddress;
         this.port = port;
     }
+
+    @Override
+    public void tick() {
+        super.tick();
+    }
 }
