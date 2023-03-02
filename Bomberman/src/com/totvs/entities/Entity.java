@@ -1,7 +1,6 @@
 package com.totvs.entities;
 
 import com.totvs.main.Game;
-import com.totvs.world.World;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

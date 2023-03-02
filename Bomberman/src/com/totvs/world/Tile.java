@@ -38,7 +38,7 @@ public abstract class Tile {
 
     public void destroy() {
         int num = rand.nextInt(0, 100) + 1;
-        int dropRate = 50;
+        int dropRate = 10;
 
         for (int i = 0; i < dropRate; i++) {
             if (rand.nextInt(0, 100 + 1) == num)

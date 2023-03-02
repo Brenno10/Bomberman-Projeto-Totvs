@@ -20,7 +20,7 @@ public class Buff extends Effect {
 
     @Override
     public void pickUp(Player player) {
-        System.out.println("sou um buff");
+//        System.out.println("sou um buff");
         switch (effect) {
             case 0 -> player.bombPower += amount;
             case 1 -> player.maxBombsAmount += amount;

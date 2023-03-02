@@ -20,7 +20,7 @@ public class Debuff extends Effect {
 
     @Override
     public void pickUp(Player player) {
-        System.out.println("sou um debuff");
+//        System.out.println("sou um debuff");
         switch (effect) {
             case 0 -> {
                 if (player.bombPower - amount > 0)

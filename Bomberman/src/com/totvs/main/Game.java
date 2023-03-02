@@ -3,11 +3,13 @@ package com.totvs.main;
 import com.totvs.entities.Bomb;
 import com.totvs.entities.Entity;
 import com.totvs.entities.Player;
+import com.totvs.entities.PlayerMP;
 import com.totvs.graphics.BombColors;
 import com.totvs.graphics.Spritesheet;
 import com.totvs.net.GameClient;
 import com.totvs.net.GameServer;
 import com.totvs.net.packet.Packet00Login;
+import com.totvs.net.packet.Packet01Disconnect;
 import com.totvs.world.World;
 
 import javax.swing.*;
@@ -20,24 +22,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game extends Canvas implements Runnable, KeyListener {
-    private static JFrame frame;
+    public JFrame frame;
     private Thread thread;
     private boolean isRunning = true;
     private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final int WIDTH = (int) screenSize.getWidth(), HEIGHT = (int) screenSize.getHeight();
-    public static final int SCALE = 2;
+    public final int SCALE = 2;
 
     private final BufferedImage image;
 
     public static List<Entity> entities;
     public static Spritesheet player1Spritesheet, tilesSpritesheet, bombSprite;
 
+    public static Game game;
     public World world;
+    public Player player;
 
-    public static Player player;
-
-    private static GameClient socketClient;
-    private static GameServer socketServer;
+    public WindowHandler windowHandler;
+    public GameClient socketClient;
+    public GameServer socketServer;
 
     public Game() {
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -48,15 +51,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
         player1Spritesheet = new Spritesheet("/player1_spritesheet.png");
         bombSprite = new Spritesheet("/bombs_spritesheet.png");
 
-//        // iniciando entidades
-//        player = new Player("p1", 0 , 0, 8, 8,
-//                player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.GOLDEN);
-//        entities.add(player);
-
         // iniciando o mapa
         world = new World("/test_map.png");
         addKeyListener(this);
         initFrame();
+        windowHandler = new WindowHandler(this);
     }
 
     // inicia a janela
@@ -85,10 +84,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
         socketClient = new GameClient(this, "localhost");
         socketClient.start();
 
-        socketClient.sendData("ping".getBytes());
+        player = new PlayerMP(JOptionPane.showInputDialog("Por favor, digite o nome de usuário"),
+                World.playerPos.get(0).get(0),
+                World.playerPos.get(0).get(1), 8, 8,
+                Game.player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.ORANGE, null, -1);
+        entities.add(player);
 
-        Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(
-                "Por favor, digite o nome de usuário"));
+        Packet00Login loginPacket = new Packet00Login(player.getUserName());
+
+        if (socketClient != null) {
+            socketServer.addConnection((PlayerMP) player, loginPacket);
+        }
         loginPacket.writeData(socketClient);
     }
 
@@ -100,12 +106,38 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     // método principal
     public static void main(String[] args) {
-        Game game = new Game();
+        game = new Game();
         game.start();
     }
 
-    public static int getPlayerCount() {
-        return socketServer.connectedPlayers.size();
+    private int getPlayerMPIndex(String userName) {
+        int index = 0;
+        for (int i = 0; i < Game.entities.size(); i++) {
+            if (Game.entities.get(i) instanceof PlayerMP &&
+                    ((PlayerMP) Game.entities.get(i)).getUserName().equalsIgnoreCase(userName)) {
+                break;
+            }
+            index++;
+        }
+        return index;
+    }
+
+    public void movePlayer(String userName, int x, int y) {
+        int index = getPlayerMPIndex(userName);
+        Game.entities.get(index).setX(x);
+        Game.entities.get(index).setY(y);
+    }
+
+    public void removePlayerMP(String userName) {
+        int index = 0;
+        for (int i = 0; i < entities.size(); i++) {
+            if (entities.get(i) instanceof PlayerMP &&
+                    ((PlayerMP) entities.get(i)).getUserName().equalsIgnoreCase(userName)) {
+                break;
+            }
+            index++;
+        }
+        entities.remove(index);
     }
 
     // Roda a cada frame
@@ -126,7 +158,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
             return;
         }
         Graphics g = image.getGraphics();
-        g.setColor(new Color(135, 206, 235));
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         world.render(g);
@@ -160,13 +193,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
                 delta--;
             }
             if (System.currentTimeMillis() - timer >= 1000) {
-                System.out.println("FPS: " + frames);
+                frame.setTitle("Bomberman FPS: " + frames);
                 frames = 0;
                 timer += 1000;
             }
         }
 
-        // caso aconteça algum erro no loop while, fecha todos os threads para conservar memória
+        // caso aconteça algum erro no loop while, fecha todas as threads
         try {
             stop();
         } catch (InterruptedException e) {
@@ -175,13 +208,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
     }
 
     // Eventos do teclado
-
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
 
-    // Botão apertado
     @Override
     public void keyPressed(KeyEvent e) {
         // jogador 1
@@ -199,7 +230,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
             Bomb.placeBomb(player.getX(), player.getY(), Game.bombSprite, player);
     }
 
-    // Botão solto
     @Override
     public void keyReleased(KeyEvent e) {
         // jogador 1

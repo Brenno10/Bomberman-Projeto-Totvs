@@ -6,7 +6,7 @@ import com.totvs.net.GameServer;
 public abstract class Packet {
 
     public enum PacketTypes {
-        INVALID(-1), LOGIN(00), DISCONECT(01);
+        INVALID(-1), LOGIN(00), DISCONECT(01), MOVE(02);
 
         private int packetId;
 

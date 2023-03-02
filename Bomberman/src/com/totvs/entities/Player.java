@@ -1,13 +1,14 @@
 package com.totvs.entities;
 
 import com.totvs.main.Game;
+import com.totvs.net.packet.Packet02Move;
 import com.totvs.world.World;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
-    public String name;
+    public String userName;
 
     public boolean right, up, left, down;
     public final int downDir = 0, leftDir = 1, upDir = 2, rightDir = 3;
@@ -28,9 +29,9 @@ public class Player extends Entity {
     private final BufferedImage[] downPlayer;
     private final BufferedImage[] playerDeath;
 
-    public Player(String name, int x, int y, int width, int height, BufferedImage sprite, int[] playerColor) {
+    public Player(String userName, int x, int y, int width, int height, BufferedImage sprite, int[] playerColor) {
         super(x, y, width, height, sprite);
-        this.name = name;
+        this.userName = userName;
         this.playerColor = playerColor;
 
         rightPlayer = new BufferedImage[3];
@@ -86,6 +87,10 @@ public class Player extends Entity {
         }
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
     @Override
     public void tick() {
         if (!isDead) {
@@ -93,6 +98,8 @@ public class Player extends Entity {
             checkCollision();
             moved = false;
             boolean isOnTop = false;
+
+            Packet02Move packet = new Packet02Move(this.getUserName(), this.getX(), this.getY());
 
             for (int i = 0; i < Game.entities.size(); i++) {
                 if (Game.entities.get(i) instanceof Bomb) {
@@ -105,11 +112,13 @@ public class Player extends Entity {
                 moved = true;
                 dir = rightDir;
                 x += speed;
+                packet.writeData(Game.game.socketClient);
             } else if (left && World.isFree((int) (this.getX() - speed), this.getY()) && !hitBomb ||
                     left && World.isFree((int) (this.getX() - speed), this.getY()) && isOnTop) {
                 moved = true;
                 dir = leftDir;
                 x -= speed - 0.7;
+                packet.writeData(Game.game.socketClient);
             }
 
             if (up && World.isFree(this.getX(), (int) (this.getY() - speed)) && !hitBomb ||
@@ -117,11 +126,13 @@ public class Player extends Entity {
                 moved = true;
                 dir = upDir;
                 y -= speed - 0.7;
+                packet.writeData(Game.game.socketClient);
             } else if (down && World.isFree(this.getX(), (int) (this.getY() + speed)) && !hitBomb ||
                     down && World.isFree(this.getX(), (int) (this.getY() + speed)) && isOnTop) {
                 moved = true;
                 dir = downDir;
                 y += speed;
+                packet.writeData(Game.game.socketClient);
             }
 
             // animação do jogador
@@ -161,5 +172,6 @@ public class Player extends Entity {
             case 3 -> g.drawImage(rightPlayer[index], this.getX(), this.getY() - 10, null);
             default -> g.drawImage(playerDeath[index], this.getX(), this.getY() - 10, null);
         }
+        g.drawString(userName, this.x + this.width - g.getFontMetrics().stringWidth(userName) / 2, this.y + 26);
     }
 }

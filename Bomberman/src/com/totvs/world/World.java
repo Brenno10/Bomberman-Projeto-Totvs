@@ -17,7 +17,7 @@ public class World {
     public static Tile[] tiles;
     public static int WIDTH, HEIGHT;
     public static final int TILE_SIZE = 16;
-    public static List<Integer> playerPos = new ArrayList<>();
+    public static List<List<Integer>> playerPos = new ArrayList<>();
     public static BufferedImage map;
 
     public World(String path) {
@@ -49,6 +49,10 @@ public class World {
                     } else if (pixelAtual == 0xff0000ff) {
                         // player / azul
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
+                        List<Integer> pos = new ArrayList<>();
+                        pos.add(xx * 16);
+                        pos.add(yy * 16);
+                        playerPos.add(pos);
                     } // temp
                     else if (pixelAtual == 0xffff00ff) {
                         tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
