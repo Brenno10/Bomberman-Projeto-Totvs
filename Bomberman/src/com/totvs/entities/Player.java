@@ -21,7 +21,8 @@ public class Player extends Entity {
     public boolean hitBomb = false, isDead = false;
 
     private final int maxFrames = 6, maxIndex = 2;
-    private boolean moved = false;
+    public boolean moved = false;
+    private Packet02Move packet;
 
     private final BufferedImage[] rightPlayer;
     private final BufferedImage[] leftPlayer;
@@ -99,7 +100,6 @@ public class Player extends Entity {
             moved = false;
             boolean isOnTop = false;
 
-            Packet02Move packet = new Packet02Move(this.getUserName(), this.getX(), this.getY());
 
             for (int i = 0; i < Game.entities.size(); i++) {
                 if (Game.entities.get(i) instanceof Bomb) {
@@ -112,13 +112,11 @@ public class Player extends Entity {
                 moved = true;
                 dir = rightDir;
                 x += speed;
-                packet.writeData(Game.game.socketClient);
             } else if (left && World.isFree((int) (this.getX() - speed), this.getY()) && !hitBomb ||
                     left && World.isFree((int) (this.getX() - speed), this.getY()) && isOnTop) {
                 moved = true;
                 dir = leftDir;
                 x -= speed - 0.7;
-                packet.writeData(Game.game.socketClient);
             }
 
             if (up && World.isFree(this.getX(), (int) (this.getY() - speed)) && !hitBomb ||
@@ -126,13 +124,11 @@ public class Player extends Entity {
                 moved = true;
                 dir = upDir;
                 y -= speed - 0.7;
-                packet.writeData(Game.game.socketClient);
             } else if (down && World.isFree(this.getX(), (int) (this.getY() + speed)) && !hitBomb ||
                     down && World.isFree(this.getX(), (int) (this.getY() + speed)) && isOnTop) {
                 moved = true;
                 dir = downDir;
                 y += speed;
-                packet.writeData(Game.game.socketClient);
             }
 
             // animação do jogador
@@ -145,6 +141,9 @@ public class Player extends Entity {
                         index = 0;
                     }
                 }
+                packet = new Packet02Move(this.getUserName(), this.getX(), this.getY(),
+                        this.moved, this.dir, this.index);
+                packet.writeData(Game.game.socketClient);
             } else {
                 index = 0;
             }

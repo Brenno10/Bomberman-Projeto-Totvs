@@ -9,11 +9,9 @@ public abstract class Packet {
         INVALID(-1), LOGIN(00), DISCONECT(01), MOVE(02);
 
         private int packetId;
-
         PacketTypes(int packetId) {
             this.packetId = packetId;
         }
-
         public int getId() {
             return packetId;
         }
@@ -24,6 +22,7 @@ public abstract class Packet {
     public Packet(int packetId) {
         this.packetId = (byte) packetId;
     }
+
     public abstract void writeData(GameClient client);
 
     public abstract void writeData(GameServer server);

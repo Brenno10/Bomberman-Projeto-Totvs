@@ -5,21 +5,28 @@ import com.totvs.net.GameServer;
 
 public class Packet02Move extends Packet {
     private String userName;
-    private int x, y;
+    private int x, y, dir, index;
+    public boolean moved;
 
     public Packet02Move(byte[] data) {
         super(02);
         String[] dataArray = readData(data).split(",");
-        this.userName = dataArray[0] = userName;
+        this.userName = dataArray[0];
         this.x = Integer.parseInt(dataArray[1]);
-        this.x = Integer.parseInt(dataArray[2]);
+        this.y = Integer.parseInt(dataArray[2]);
+        this.moved = Integer.parseInt(dataArray[3]) == 1;
+        this.dir = Integer.parseInt(dataArray[4]);
+        this.index = Integer.parseInt(dataArray[5]);
     }
 
-    public Packet02Move(String userName, int x, int y) {
+    public Packet02Move(String userName, int x, int y, boolean moved, int dir, int index) {
         super(02);
         this.userName = userName;
         this.x = x;
         this.y = y;
+        this.dir = dir;
+        this.moved = moved;
+        this.index = index;
     }
 
     @Override
@@ -34,7 +41,8 @@ public class Packet02Move extends Packet {
 
     @Override
     public byte[] getData() {
-        return ("02" + this.userName + "," + this.x + "," + this.y).getBytes();
+        return ("02" + this.userName + "," + getX() + "," + getY() +
+                "," + (moved?1:0) + "," + this.getDir() + "," + this.getIndex()).getBytes();
     }
 
     public String getUserName() {
@@ -47,5 +55,13 @@ public class Packet02Move extends Packet {
 
     public int getY() {
         return y;
+    }
+
+    public int getDir() {
+        return dir;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

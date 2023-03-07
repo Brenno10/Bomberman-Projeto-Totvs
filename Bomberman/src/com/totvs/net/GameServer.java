@@ -57,8 +57,7 @@ public class GameServer extends Thread {
                         " has connected...");
 
                 PlayerMP player = new PlayerMP(((Packet00Login) packet).getUserName(),
-                        World.playerPos.get(0).get(0),
-                        World.playerPos.get(0).get(1), 8, 8,
+                        ((Packet00Login) packet).getX(), ((Packet00Login) packet).getY(), 8, 8,
                         Game.player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.ORANGE, address, port);
                 this.addConnection(player, ((Packet00Login) packet));
             }
@@ -71,8 +70,6 @@ public class GameServer extends Thread {
             }
             case MOVE -> {
                 packet = new Packet02Move(data);
-                System.out.println(((Packet02Move) packet).getUserName() + " has moved to " +
-                        ((Packet02Move) packet).getX() + ", " + ((Packet02Move) packet).getUserName());
                 this.handleMove(((Packet02Move) packet));
             }
         }
@@ -92,7 +89,7 @@ public class GameServer extends Thread {
                 alreadyConnected = true;
             } else {
                 sendData(packet.getData(), p.ipAddress, p.port);
-                packet = new Packet00Login(p.getUserName());
+                packet = new Packet00Login(p.getUserName(), p.getX(), p.getY());
                 sendData(packet.getData(), player.ipAddress, player.port);
             }
         }
@@ -144,8 +141,12 @@ public class GameServer extends Thread {
     private void handleMove(Packet02Move packet) {
         if (getPlayerMP(packet.getUserName()) != null) {
             int index = getPlayerMPIndex(packet.getUserName());
-            this.connectedPlayers.get(index).setX(packet.getX());
-            this.connectedPlayers.get(index).setY(packet.getY());
+            PlayerMP player = this.connectedPlayers.get(index);
+            player.setX(packet.getX());
+            player.setY(packet.getY());
+            player.moved = packet.moved;
+            player.dir = packet.getDir();
+            player.index = packet.getIndex();
             packet.writeData(this);
         }
     }

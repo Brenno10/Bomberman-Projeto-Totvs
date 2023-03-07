@@ -9,7 +9,6 @@ import com.totvs.graphics.Spritesheet;
 import com.totvs.net.GameClient;
 import com.totvs.net.GameServer;
 import com.totvs.net.packet.Packet00Login;
-import com.totvs.net.packet.Packet01Disconnect;
 import com.totvs.world.World;
 
 import javax.swing.*;
@@ -88,9 +87,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
                 World.playerPos.get(0).get(0),
                 World.playerPos.get(0).get(1), 8, 8,
                 Game.player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.ORANGE, null, -1);
-        entities.add(player);
+        getEntities().add(player);
 
-        Packet00Login loginPacket = new Packet00Login(player.getUserName());
+        Packet00Login loginPacket = new Packet00Login(player.getUserName(), player.getX(), player.getY());
 
         if (socketClient != null) {
             socketServer.addConnection((PlayerMP) player, loginPacket);
@@ -112,9 +111,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     private int getPlayerMPIndex(String userName) {
         int index = 0;
-        for (int i = 0; i < Game.entities.size(); i++) {
-            if (Game.entities.get(i) instanceof PlayerMP &&
-                    ((PlayerMP) Game.entities.get(i)).getUserName().equalsIgnoreCase(userName)) {
+        for (int i = 0; i < getEntities().size(); i++) {
+            if (getEntities().get(i) instanceof PlayerMP &&
+                    ((PlayerMP) getEntities().get(i)).getUserName().equalsIgnoreCase(userName)) {
                 break;
             }
             index++;
@@ -122,28 +121,35 @@ public class Game extends Canvas implements Runnable, KeyListener {
         return index;
     }
 
-    public void movePlayer(String userName, int x, int y) {
-        int index = getPlayerMPIndex(userName);
-        Game.entities.get(index).setX(x);
-        Game.entities.get(index).setY(y);
+    public void movePlayer(String userName, int x, int y, boolean moved, int dir, int index) {
+        int indexP = getPlayerMPIndex(userName);
+        PlayerMP player = (PlayerMP) getEntities().get(indexP);
+        player.setX(x);
+        player.setY(y);
+        player.moved = moved;
+        player.dir = dir;
+        player.index = index;
     }
 
     public void removePlayerMP(String userName) {
         int index = 0;
-        for (int i = 0; i < entities.size(); i++) {
-            if (entities.get(i) instanceof PlayerMP &&
-                    ((PlayerMP) entities.get(i)).getUserName().equalsIgnoreCase(userName)) {
+        for (int i = 0; i < getEntities().size(); i++) {
+            if (getEntities().get(i) instanceof PlayerMP &&
+                    ((PlayerMP) getEntities().get(i)).getUserName().equalsIgnoreCase(userName)) {
                 break;
             }
             index++;
         }
-        entities.remove(index);
+        getEntities().remove(index);
+    }
+    public synchronized List<Entity> getEntities() {
+        return entities;
     }
 
     // Roda a cada frame
     public void tick() {
-        for (int i = 0; i < entities.size(); i++) {
-            entities.get(i).tick();
+        for (int i = 0; i < getEntities().size(); i++) {
+            getEntities().get(i).tick();
         }
         for (int i = 0; i < World.tiles.length; i++) {
             World.tiles[i].tick();
@@ -164,8 +170,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         world.render(g);
 
-        for (int i = 0; i < entities.size(); i++) {
-            entities.get(i).render(g);
+        for (int i = 0; i < getEntities().size(); i++) {
+            getEntities().get(i).render(g);
         }
 
         g = bs.getDrawGraphics();

@@ -7,7 +7,6 @@ import com.totvs.net.packet.Packet;
 import com.totvs.net.packet.Packet00Login;
 import com.totvs.net.packet.Packet01Disconnect;
 import com.totvs.net.packet.Packet02Move;
-import com.totvs.world.World;
 
 import java.io.IOException;
 import java.net.*;
@@ -50,15 +49,7 @@ public class GameClient extends Thread {
             case INVALID -> {}
             case LOGIN -> {
                 packet = new Packet00Login(data);
-                System.out.println("[" + address.getHostAddress() + ":" + port + "] " +
-                        ((Packet00Login) packet).getUserName() +
-                        " has joined the game...");
-
-                PlayerMP player = new PlayerMP(((Packet00Login) packet).getUserName(),
-                        World.playerPos.get(0).get(0),
-                        World.playerPos.get(0).get(1), 8, 8,
-                        Game.player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.ORANGE, address, port);
-                game.entities.add(player);
+                handleData((Packet00Login) packet, address, port);
             }
             case DISCONECT -> {
                 packet = new Packet01Disconnect(data);
@@ -75,7 +66,8 @@ public class GameClient extends Thread {
     }
 
     private void handleMove(Packet02Move packet) {
-        this.game.movePlayer(packet.getUserName(), packet.getX(), packet.getY());
+        this.game.movePlayer(packet.getUserName(), packet.getX(), packet.getY(),
+                packet.moved, packet.getDir(), packet.getIndex());
     }
 
     public void sendData(byte[] data) {
@@ -85,5 +77,16 @@ public class GameClient extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleData(Packet00Login packet, InetAddress address, int port) {
+        System.out.println("[" + address.getHostAddress() + ":" + port + "] " +
+                packet.getUserName() +
+                " has joined the game...");
+
+        PlayerMP player = new PlayerMP(packet.getUserName(),
+                packet.getX(), packet.getY(), 8, 8,
+                Game.player1Spritesheet.getSprite(0, 69, 16, 26), BombColors.ORANGE, address, port);
+        game.entities.add(player);
     }
 }
